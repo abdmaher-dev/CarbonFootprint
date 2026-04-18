@@ -1,0 +1,257 @@
+{
+  "en": {
+    "nav": {
+      "home": "Home",
+      "about": "About",
+      "calc": "Calculator",
+      "contact": "Community Calculator",
+      "logo": "<img class='logo-img' src='/Images/logos/comp.png' alt='Software Engineer' /> Carbon Footprint"
+    },
+    "hero": {
+      "title": "Carbon Footprint",
+      "paragraph": "Discover the impact you have on the environment through a precise and easy-to-use carbon footprint calculator. ",
+      "under": "Understanding Carbon Footprint",
+      "indvBut":"Calculate Now",
+      "commBut":"Comunity Print"
+
+    },
+    "cards": {
+      "first": {
+        "h": "What is Carbon Footprint?",
+        "p": "A carbon footprint measures the total greenhouse gas emissions caused directly and indirectly by an individual, organization, or product."
+      },
+      "second": {
+        "h": "Why It Matters",
+        "p": "Reducing carbon emissions is crucial for combating climate change and preserving our planet for future generations."
+      },
+      "third": {
+        "h": "Take Action",
+        "p": "Small changes in daily life can significantly reduce your environmental impact and inspire others to do the same."
+      }
+    },
+    "art":{
+        "header":"Reduce Your Carbon Footprint",
+        "firstHeader":"Use Puplic Transport",
+        "secondHeader":"Save Energy",
+        "thirdHeader":"Eat Plant-Based",
+        "fourthHeader":"Shop Sustainably",
+        "fifthHeader":"Awareness",
+
+        "Firstp":"Reduce emissions by 4.6 metric tons annually per person",
+        "Secondp":"Switch to LED bulbs and unplug devices when not in use",
+        "Thirdp":"Reduce food emissions by up to 73%",
+        "Fourthp":"Choose eco-friendly products and reduce consumption",
+        "fifthp":"Calculating your carbon footprint helps raise awareness among others about the impact of our daily actions"
+    },
+    "footer":{
+        "header":"Togethar for a greener Future",
+        "p":"Every action counts. Start your journey towards a sustainable lifestyle today.",
+        "first":"Tons CO₂ Annually",
+        "second":"Target Limit",
+        "third":"Climate Goals"
+    },
+    "about":{
+      "text1":"What is carbonfootprint?",
+      "text2":"The carbon footprint is the total amount of greenhouse gases produced by human activities on a daily basis, such as driving, electricity, food, and travel. Measuring the carbon footprint is the first step towards understanding our impact on the climate and taking practical steps to reduce this impact.",
+      "text3":"Why CarbonFootpribt is Importned?",
+      "text4":"Rising carbon dioxide levels lead to global warming, which causes extreme heat waves, floods, droughts, and rising sea levels.The less we emit, the more we contribute to saving the Earth for future generations.",
+      "text5":"Major sources of carbon emissions",
+      "text6":"Transportation: cars, airplanes, trucks.",
+      "text7":"Electricity consumption from non-renewable sources.",
+      "text8":"Industry and production of materials such as iron, cement, and plastics.",
+      "text9":"Agriculture and animal husbandry.",
+      "text10":"Burning fossil fuels and gas.",
+
+      "text11":"Impact of carbon footprint on the environment",
+      "text12":"Climate change🌍",
+      "text13":"Rising temperatures🔥",
+      "text14":"Sea level rise🌊 ",
+      "text15":"Air pollution🍃",
+
+      "text16":"Rising global temperatures cause extreme weather events and serious environmental disruptions.",
+      "text17":"The Earth has recorded its highest temperatures in history in recent years due to increasing emissions.",
+      "text18":"Melting polar ice leads to flooding of coastal cities around the world.",
+      "text19":"Causes serious health problems such as asthma, allergies, and heart diseases.",
+
+      "text20": "How can you reduce your carbon footprint?",
+      "text21": "Use eco-friendly transportation or walk whenever possible.",
+      "text22": "Replace old electrical appliances with energy-efficient ones.",
+      "text23": "Reduce red meat consumption.",
+      "text24": "Rely on solar energy or other renewable energy sources.",
+      "text25": "Recycle and reduce waste.",
+
+      "text26":"Important Notice: These numbers are not official data, but rather rough estimates based on knowledge of population ratios and various economic activities (oil, transportation, electricity), and do not reflect published studies.",
+
+      "text27":"Calculate Your CarbonFootprint Now"
+
+    },
+    "cal":{
+      "header1":"Enter your data (all fields are optional)",
+      "header2":"Gasoline consumption (liters/month)⛽",
+      "header3":"Diesel consumption (liters/month)🛢️",
+      "header4":"Distance traveled (km/month)🚗",
+      "header5":"Electricity consumption (kWh/month)⚡",
+      "header6":"Number of gas cylinders (per month)🔥",
+      "header7":"Water consumption (m³/month)💧",
+      "header8":"Waste weight (kg/week)🗑️",
+      "header9":"Diet type🥦",
+      "header10":"Choose...",
+      "header11":"Vegan",
+      "header12":"Moderate",
+      "header13":"High-meat",
+      "header14":"Number of flights per year✈️",
+      "header15":"Monthly spending (USD)🛍️",
+      "header16":"Calculate now"
+    },
+    "comm":{
+      "header1":"Community Carbon Footprint Calculator",
+      "header2":"🏙️ Community Type",
+      "header3":"Choose...",
+      "header4":"Company",
+      "header5":"College / University",
+      "header6":"Town / City",
+      "header7":"👥 Number of People",
+      "header8":"⚡ Electricity Consumption (kWh/month)",
+      "header9":"⛽ Gasoline (liters/month)",
+      "header10":"🛢️ Diesel (liters/month)",
+      "header11":"🚛 Community Waste (kg/month)",
+      "header12":"💧 Water Consumption (m³/month)",
+      "header13":"✈️ Annual Number of Flights",
+      "header14":"Calculate Community Footprint"
+
+    },
+
+
+    "langButton": "العربية",
+    "dir": "ltr"
+  },
+
+  "ar": {
+    "nav": {
+      "home": "الرئيسية",
+      "about": "التفاصيل",
+      "calc": "المقياس",
+      "contact": "مقياس المجتمع",
+      "logo": "<img class='logo-img' src='/Images/logos/comp.png' alt='Software Engineer' /> البصمة الكاربونية"
+    },
+    "hero": {
+      "title": "البصمة الكاربونية",
+      "paragraph": "تعرف على مقدار تأثيرك على البيئة من خلال أداة دقيقة وسهلة الاستخدام لحساب البصمة الكربونية. ابدأ في تقليل استهلاكك للطاقة، وانبعاثاتك، وغيّر عاداتك اليومية لتبني أسلوب حياة أكثر استدامة.",
+
+      "under": "افهم مبادئ البصمة الكاربونية",
+      "indvBut":"احسب الان",
+      "commBut":"بصمة المجتمع"
+    },
+    "cards": {
+      "first": {
+        "h": "ماهي البصمة الكاربونية ؟",
+        "p": "يقيس البصمة الكربونية إجمالي انبعاثات الغازات الدفيئة التي تسببها بشكل مباشر وغير مباشر فرد أو منظمة أو منتج."
+      },
+      "second": {
+        "h": "لماذا هذا مهم",
+        "p": "إن تقليل انبعاثات الكربون أمر بالغ الأهمية لمكافحة تغير المناخ والحفاظ على كوكبنا للأجيال القادمة."
+      },
+      "third": {
+        "h": "اتخذ إجراءً",
+        "p": "يمكن أن تحدث التغييرات الصغيرة في الحياة اليومية فرقًا كبيرًا في تقليل تأثيرك البيئي وإلهام الآخرين لفعل الشيء نفسه."
+      }
+    },
+    "art":{
+        "header":"قلل بصمتك الكاربونية",
+        "firstHeader":"أستعمل النقل العام",
+        "secondHeader":"لاتسفر بالطاقة",
+        "thirdHeader":"الاكل باعتدال",
+        "fourthHeader":"التسوق باعتدال",
+        "fifthHeader":"التوعية",
+
+        "Firstp":"خفض الانبعاثات بمقدار 4.6 طن متري سنويًا للشخص الواحد",
+        "Secondp":"التبديل إلى مصابيح LED وفصل الأجهزة عند عدم استخدامها",
+        "Thirdp":"تقليل انبعاثات الغذاء بنسبة تصل إلى 73%",
+        "Fourthp":"اختر المنتجات الصديقة للبيئة وقلل من الاستهلاك",
+        "fifthp":"حساب بصمتك الكربونية يساعدك على توعية الآخرين بتأثير أفعالنا اليومية على البيئة"
+
+    },
+    
+    "footer":{
+        "header":"معا لمستقبل اكثر خضارا",
+        "p":"كل فعل له قيمته. ابدأ رحلتك نحو نمط حياة مستدام اليوم.",
+        "first":"أطنان من ثاني أكسيد الكربون سنويًا",
+        "second":"الهدف المحدد",
+        "third":"أهداف المناخ"
+    },
+    "about":{
+      "text1":"ماهي البصمة الكاربونية؟",
+      "text2":"البصمة الكربونية هي إجمالي كمية غازات الاحتباس الحراري التي ينتجها الإنسان من أنشطته اليومية، مثل القيادة، الكهرباء، الطعام، والسفر. قياس البصمة الكربونية هو الخطوة الأولى نحو فهم تأثيرنا على المناخ واتخاذ خطوات عملية لتقليل هذا الأثر.",
+      "text3":"لماذا تُعد البصمة الكربونية مهمة؟",
+      "text4":"أن ارتفاع مستويات ثاني أكسيد الكربون يؤدي إلى الاحتباس الحراري، والذي يتسبب في موجات حر شديدة، فيضانات، جفاف، وارتفاع مستويات البحار. كلما قللنا انبعاثاتنا كلما ساهمنا في إنقاذ الأرض للأجيال  القادمة.",
+      "text5":"أهم مصادر الانبعاثات الكاربونية",
+      "text6":"النقل: السيارات، الطائرات، الشاحنات.",
+      "text7":"استهلاك الكهرباء من مصادر غير متجددة.",
+      "text8":"الصناعة وإنتاج المواد مثل الحديد، الإسمنت، والبلاستيك.",
+      "text9":"الزراعة وتربية الحيوانات.",
+      "text10":"حرق الوقود الأحفوري والغاز.",
+      "text11":"تأثير البصمة الكاربونية على البيئة",
+      "text12":"التغير المناخي🌍",
+      "text13":"ارتفاع درجات الحرارة🔥",
+      "text14":"ارتفاع منسوب المياه🌊 ",
+      "text15":"تلوث الهواء🍃",
+
+      "text16":" ارتفاع درجة حرارة الكوكب يؤدي إلى تقلبات مناخية حادة واضطرابات بيئية خطيرة.",
+      "text17":" سجّلت الأرض أعلى درجات حرارة في التاريخ خلال السنوات الأخيرة بسبب الانبعاثات المتزايدة.",
+      "text18":" ذوبان الجليد القطبي يؤدي إلى غرق مدن ساحلية حول العالم.",
+      "text19":"يسبب مشاكل صحية خطيرة مثل الربو، الحساسية، وأمراض القلب.",
+
+      "text20": "كيف يمكن تقليل البصمة الكاربونية ؟",
+      "text21": "استخدام وسائل نقل صديقة للبيئة أو المشي.",
+      "text22": "استبدال الأجهزة الكهربائية القديمة بأجهزة موفرة للطاقة.",
+      "text23": "تقليل استهلاك اللحوم الحمراء.",
+      "text24": "الاعتماد على الطاقة الشمسية أو مصادر متجددة.",
+      "text25": ">إعادة التدوير وتقليل النفايات.",
+
+      "text26":"تنبيه مهم: هذه الأرقام ليست بيانات رسمية، وإنما تقديرات تقريبية بناءً على معرفة نسب السكان وأنشطة اقتصادية متنوعة (نفط، نقل، كهرباء)، ولا تُعبر عن دراسات منشورة.",
+
+      "text27":"احسب بصمتك الكاربونية"
+
+    },
+    "cal":{
+      "header1":"أدخل بياناتك (كل الحقول اختيارية)",
+      "header2":"⛽ استهلاك البنزين (لتر/شهر)",
+      "header3":"🛢️ استهلاك الديزل (لتر/شهر)",
+      "header4":"🚗 المسافة المقطوعة (كم/شهر)",
+      "header5":"⚡ استهلاك الكهرباء (ك.و.س/شهر)",
+      "header6":"🔥 عدد أسطوانات الغاز (شهريًا)",
+      "header7":"💧 استهلاك المياه (م³/شهر)",
+      "header8":"استهلاك النفايات اسبوعيا ",
+      "header9":"🥦 نمط الغذاء",
+      "header10":"اختر...",
+      "header11":"نباتي",
+      "header12":"متوسط",
+      "header13":"غني باللحوم",
+      "header14":"✈️ عدد الرحلات الجوية بالسنة",
+      "header15":"🛍️ الإنفاق الشهري (دولار)",
+      "header16":"احسب الآن"
+    },
+        "comm":{
+      "header1":"الحاسبة المجتمعية للبصمة الكربونية",
+      "header2":"🏙️ نوع المجتمع",
+      "header3":"اختر...",
+      "header4":"شركة",
+      "header5":"كلية / جامعة",
+      "header6":"مدينة / بلدة",
+      "header7":"👥 عدد الأفراد",
+      "header8":"⚡ استهلاك الكهرباء (ك.و.س/شهر)",
+      "header9":"⛽ البنزين (لتر/شهر)",
+      "header10":"🛢️ الديزل (لتر/شهر)",
+      "header11":"🚛 نفايات المجتمع (كغم/شهر)",
+      "header12":"💧 استهلاك الماء (م³/شهر)",
+      "header13":"✈️ عدد الرحلات الجوية السنوية",
+      "header14":"احسب البصمة المجتمعية"
+
+    },
+
+    
+
+    "langButton": "English",
+    "dir": "rtl"
+  }
+}

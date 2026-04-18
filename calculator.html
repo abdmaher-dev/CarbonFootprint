@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Carbon Footprint — المقياس</title>
+    <link rel="stylesheet" href="dist/output.css" />
+    <link rel="stylesheet" href="/src/input.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Parastoo:wght@400..700&display=swap" rel="stylesheet" />
+
+    <!-- EmailJS SDK — مطلوب لخاصية إرسال الإيميل -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <style>
+      /* ===== تحسينات صفحة الكالكيولاتور ===== */
+
+      body { background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f0f9ff 100%); min-height: 100vh; }
+
+      .cal-sect {
+        display: flex;
+        justify-content: center;
+        direction: rtl;
+        padding: 3rem 1rem 5rem;
+      }
+
+      .cal-wrapper {
+        width: 100%;
+        max-width: 780px;
+      }
+
+      .cal-hero-banner {
+        background: linear-gradient(135deg, #059669, #10b981, #34d399);
+        border-radius: 24px;
+        padding: 2.5rem 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        color: white;
+        box-shadow: 0 20px 60px -10px rgba(5,150,105,0.4);
+        position: relative;
+        overflow: hidden;
+      }
+      .cal-hero-banner::before {
+        content: '';
+        position: absolute;
+        top: -50%; right: -20%;
+        width: 300px; height: 300px;
+        background: rgba(255,255,255,0.08);
+        border-radius: 50%;
+      }
+      .cal-hero-banner h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; }
+      .cal-hero-banner p  { opacity: 0.85; font-size: 1rem; }
+
+      .cal-card {
+        background: white;
+        border-radius: 24px;
+        padding: 2.5rem;
+        box-shadow: 0 4px 40px -5px rgba(5,150,105,0.15);
+        border: 1px solid #d1fae5;
+      }
+
+      .form-section-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #059669;
+        margin: 1.5rem 0 1rem;
+        padding-right: 0.75rem;
+        border-right: 4px solid #10b981;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+      @media (max-width: 600px) {
+        .form-grid { grid-template-columns: 1fr; }
+        .cal-hero-banner h1 { font-size: 1.5rem; }
+      }
+
+      .input-card {
+        background: #f8fffe;
+        border: 1.5px solid #d1fae5;
+        border-radius: 16px;
+        padding: 1rem 1.2rem;
+        transition: all 0.2s ease;
+        position: relative;
+      }
+      .input-card:hover, .input-card:focus-within {
+        border-color: #10b981;
+        box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
+        background: white;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+        font-family: "Parastoo", serif;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 0.6rem 0.8rem;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        background: white;
+        color: #111827;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        margin-top: 0;
+        font-family: "Parastoo", serif;
+      }
+      .form-input:focus {
+        outline: none;
+        border-color: #10b981;
+        box-shadow: 0 0 0 3px rgba(16,185,129,0.12);
+      }
+      select.form-input { cursor: pointer; }
+
+      .email-card {
+        grid-column: 1 / -1;
+        background: linear-gradient(135deg, #ecfdf5, #f0f9ff);
+        border: 2px solid #6ee7b7;
+      }
+      .email-card .form-label { color: #065f46; font-size: 0.95rem; }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #059669, #10b981);
+        color: white;
+        font-weight: 800;
+        padding: 1rem 3rem;
+        border-radius: 50px;
+        border: none;
+        font-size: 1.1rem;
+        cursor: pointer;
+        box-shadow: 0 8px 25px -5px rgba(5,150,105,0.5);
+        transition: all 0.3s ease;
+        font-family: "Parastoo", serif;
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px -5px rgba(5,150,105,0.6);
+      }
+      .btn-primary:active { transform: translateY(0); }
+
+      .btn-wrap { text-align: center; margin-top: 2rem; }
+
+      /* نتيجة */
+      #result { margin-top: 2rem; }
+
+      .result-card {
+        background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+        border: 2px solid #6ee7b7;
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        animation: fadeSlideUp 0.5s ease forwards;
+        direction: rtl;
+      }
+      @keyframes fadeSlideUp {
+        from { opacity:0; transform: translateY(20px); }
+        to   { opacity:1; transform: translateY(0); }
+      }
+
+      .result-meter {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+      }
+      .result-emoji { font-size: 3.5rem; line-height: 1; }
+      .result-numbers { text-align: right; }
+      .result-numbers p { font-family: "Parastoo", serif; font-size: 1.1rem; color: #064e3b; margin: 0.2rem 0; }
+      .result-numbers strong { font-size: 1.4rem; color: #059669; }
+
+      .result-level-badge {
+        display: inline-block;
+        background: #059669;
+        color: white;
+        padding: 0.3rem 1.2rem;
+        border-radius: 50px;
+        font-weight: 700;
+        margin: 0.75rem auto;
+        font-family: "Parastoo", serif;
+      }
+
+      .result-advice {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        color: #374151;
+        font-family: "Parastoo", serif;
+        font-size: 0.95rem;
+        line-height: 1.8;
+        margin-top: 0.75rem;
+        border: 1px solid #d1fae5;
+        text-align: right;
+      }
+
+      .email-notice {
+        margin-top: 1rem;
+        color: #059669;
+        font-weight: 600;
+        font-family: "Parastoo", serif;
+        font-size: 0.9rem;
+        background: white;
+        border-radius: 10px;
+        padding: 0.6rem 1rem;
+        border: 1px dashed #6ee7b7;
+      }
+
+      /* tips section */
+      .tips-section {
+        margin-top: 2rem;
+        background: white;
+        border-radius: 20px;
+        padding: 1.5rem 2rem;
+        border: 1px solid #d1fae5;
+        box-shadow: 0 2px 20px -5px rgba(5,150,105,0.1);
+      }
+      .tips-section h3 { color: #059669; font-weight: 800; margin-bottom: 1rem; font-family: "Parastoo",serif; font-size:1.1rem; }
+      .tips-grid { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+      .tip-tag {
+        background: #ecfdf5;
+        color: #065f46;
+        padding: 0.4rem 0.9rem;
+        border-radius: 50px;
+        font-size: 0.82rem;
+        font-family: "Parastoo",serif;
+        border: 1px solid #a7f3d0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="nav-container dir">
+        <a href="/index.html" class="ar nav-logo nav-link">
+          <img class="logo-img" src="/Images/logos/comp.png" alt="Logo" />
+          البصمة الكاربونية
+        </a>
+        <div class="nav-links">
+          <a href="/index.html"     id="home-li"  class="ar nav-link home-li">الرئيسية</a>
+          <a href="/About.html"     id="about-li" class="ar nav-link about-li">التفاصيل</a>
+          <a href="/calculator.html" id="cal-li"  class="ar nav-link cal-li">المقياس</a>
+          <a href="/Community.html" id="con-li"   class="ar nav-link con-li">مقياس المجتمع</a>
+          <a href="#" id="engbut" class="ar nav-link engbut">English</a>
+        </div>
+        <div id="menu-btn" class="menu-btn">
+          <span class="menu-line"></span>
+          <span class="menu-line"></span>
+          <span class="menu-line"></span>
+        </div>
+      </div>
+    </nav>
+
+    <div id="overlay" class="overlay hidden"></div>
+    <div id="side-menu" class="side-menu">
+      <a href="/index.html"     id="home-li"  class="ar nav-link home-li">الرئيسية</a>
+      <a href="/About.html"     id="about-li" class="ar nav-link about-li">التفاصيل</a>
+      <a href="/calculator.html" id="cal-li"  class="ar nav-link cal-li">المقياس</a>
+      <a href="/Community.html" id="con-li"   class="ar nav-link con-li">مقياس المجتمع</a>
+      <a href="#" id="engbut" class="ar nav-link engbut">English</a>
+    </div>
+
+    <!-- Calculator Section -->
+    <div class="cal-sect">
+      <div class="cal-wrapper">
+
+        <!-- Banner -->
+        <div class="cal-hero-banner fade-in">
+          <h1 class="ar">🌿 احسب بصمتك الكاربونية</h1>
+          <p class="ar" id="cal-header">أدخل بياناتك — كل الحقول اختيارية ما عدا الإيميل</p>
+        </div>
+
+        <!-- Form Card -->
+        <div class="cal-card fade-in">
+
+          <p class="form-section-title ar">⛽ الوقود والتنقل</p>
+          <div class="form-grid" id="carbonForm">
+
+            <div class="input-card">
+              <label id="cal-header2" class="form-label ar">⛽ استهلاك البنزين (لتر/شهر)</label>
+              <input type="number" id="gasoline" class="form-input ar" placeholder="50" min="0">
+            </div>
+
+            <div class="input-card">
+              <label id="cal-header3" class="form-label ar">🛢️ استهلاك الديزل (لتر/شهر)</label>
+              <input type="number" id="diesel" class="form-input ar" placeholder="30" min="0">
+            </div>
+
+            <div class="input-card">
+              <label id="cal-header4" class="form-label ar">🚗 المسافة المقطوعة (كم/شهر)</label>
+              <input type="number" id="distance" class="form-input ar" placeholder="800" min="0">
+            </div>
+
+            <div class="input-card">
+              <label id="cal-header14" class="form-label ar">✈️ عدد الرحلات الجوية بالسنة</label>
+              <input type="number" id="flights" class="form-input ar" placeholder="2" min="0">
+            </div>
+
+          </div>
+
+          <p class="form-section-title ar">🏠 المنزل والطاقة</p>
+          <div class="form-grid">
+
+            <div class="input-card">
+              <label id="cal-header5" class="form-label ar">⚡ استهلاك الكهرباء (ك.و.س/شهر)</label>
+              <input type="number" id="electricity" class="form-input ar" placeholder="250" min="0">
+            </div>
+
+            <div class="input-card">
+              <label id="cal-header6" class="form-label ar">🔥 عدد أسطوانات الغاز (شهريًا)</label>
+              <input type="number" id="gas" class="form-input ar" placeholder="2" min="0">
+            </div>
+
+            <div class="input-card">
+              <label id="cal-header7" class="form-label ar">💧 استهلاك المياه (م³/شهر)</label>
+              <input type="number" id="water" class="form-input ar" placeholder="10" min="0">
+            </div>
+
+            <div class="input-card">
+              <label id="cal-header8" class="form-label ar">🗑️ وزن النفايات (كغم/أسبوع)</label>
+              <input type="number" id="waste" class="form-input ar" placeholder="5" min="0">
+            </div>
+
+          </div>
+
+          <p class="form-section-title ar">🥦 الغذاء والتسوق</p>
+          <div class="form-grid">
+
+            <div class="input-card">
+              <label id="cal-header9" class="form-label ar">🥦 نمط الغذاء</label>
+              <select id="diet" class="form-input ar">
+                <option id="cal-header10" value="">اختر...</option>
+                <option id="cal-header11" value="1.7">نباتي 🌱</option>
+                <option id="cal-header12" value="2.5">متوسط 🍽️</option>
+                <option id="cal-header13" value="3.3">غني باللحوم 🥩</option>
+              </select>
+            </div>
+
+            <div class="input-card">
+              <label id="cal-header15" class="form-label ar">🛍️ الإنفاق الشهري (دولار)</label>
+              <input type="number" id="shopping" class="form-input ar" placeholder="100" min="0">
+            </div>
+
+          </div>
+
+          <!-- Email Field — مميّز -->
+          <p class="form-section-title ar">📧 استلام نتائجك</p>
+          <div class="form-grid">
+            <div class="input-card email-card">
+              <label class="form-label ar">📧 البريد الإلكتروني <span style="color:#059669;font-size:0.8rem">(لاستلام نتائجك وتذكير أسبوعي)</span></label>
+              <input type="email" id="email" class="form-input" placeholder="example@gmail.com" style="direction:ltr; text-align:left">
+              <p class="ar" style="font-size:0.78rem; color:#6b7280; margin-top:0.4rem;">✅ سيصلك إيميل بالنتائج فوراً + تذكير بعد أسبوع لإعادة القياس</p>
+            </div>
+          </div>
+
+          <!-- زر الحساب -->
+          <div class="btn-wrap">
+            <button id="cal-header16" type="button" onclick="calculateCarbon()" class="btn-primary ar">
+              🌿 احسب الآن
+            </button>
+          </div>
+
+          <!-- النتيجة -->
+          <div id="result"></div>
+
+        </div>
+
+        <!-- نصائح سريعة -->
+        <div class="tips-section fade-in">
+          <h3 class="ar">💡 نصائح سريعة لتقليل بصمتك</h3>
+          <div class="tips-grid">
+            <span class="tip-tag ar">🚌 استخدم النقل العام</span>
+            <span class="tip-tag ar">💡 أطفئ الأضواء</span>
+            <span class="tip-tag ar">🚴 اركب الدراجة</span>
+            <span class="tip-tag ar">🌱 قلّل اللحوم</span>
+            <span class="tip-tag ar">♻️ أعد التدوير</span>
+            <span class="tip-tag ar">☀️ الطاقة الشمسية</span>
+            <span class="tip-tag ar">🛁 قلّل استهلاك الماء</span>
+            <span class="tip-tag ar">🛒 تسوق بوعي</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <main class="footer">
+      <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" fill="#00FF00" viewBox="0 0 256 256">
+        <path d="M138.54,149.46C106.62,96.25,149.18,43.05,239.63,48.37,245,138.82,191.75,181.39,138.54,149.46ZM16.26,88.26c-3.8,64.61,34.21,95,72.21,72.21C111.27,122.47,80.87,84.46,16.26,88.26Z" opacity="0.2"></path>
+        <path d="M247.63,47.89a8,8,0,0,0-7.52-7.52c-51.76-3-93.32,12.74-111.18,42.22-11.8,19.48-11.78,43.16-.16,65.74a71.37,71.37,0,0,0-14.17,26.95L98.33,159c7.82-16.33,7.52-33.36-1-47.49C84.09,89.73,53.62,78,15.79,80.27a8,8,0,0,0-7.52,7.52c-2.23,37.83,9.46,68.3,31.25,81.5A45.82,45.82,0,0,0,63.44,176,54.58,54.58,0,0,0,87,170.33l25,25V224a8,8,0,0,0,16,0V194.51a55.61,55.61,0,0,1,12.27-35,73.91,73.91,0,0,0,33.31,8.4,60.9,60.9,0,0,0,31.83-8.86C234.89,141.21,250.67,99.65,247.63,47.89Z"></path>
+      </svg>
+      <h1 id="footer-header" class="ar footer-header">Together for a Greener Future</h1>
+      <h4 id="footer-p" class="ar footer-p">Every action counts. Start your journey towards a sustainable lifestyle today.</h4>
+      <div class="footer-content">
+        <div class="footer-el el-1"><p class="footer-el-header">7.9B</p><p id="footer-1" class="ar footer-el-p">Tons CO₂ Annually</p></div>
+        <div class="footer-el el-2"><p class="footer-el-header">1.5°C</p><p id="footer-2" class="ar footer-el-p">Target Limit</p></div>
+        <div class="footer-el el-3"><p class="footer-el-header">2030</p><p id="footer-3" class="ar footer-el-p">Climate Goals</p></div>
+      </div>
+    </main>
+
+    <script src="src/app.js"></script>
+  </body>
+</html>

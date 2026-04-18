@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>البصمة الكاربونية</title>
+    <link rel="stylesheet" href="./dist/output.css" />
+    <link rel="stylesheet" href="./src/input.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Parastoo:wght@400..700&display=swap" rel="stylesheet" />
+
+    <style>
+      /* ===== تحسينات الصفحة الرئيسية ===== */
+
+      /* Hero section improvements */
+      .hero {
+        min-height: 92vh;
+        background: linear-gradient(
+          to bottom,
+          rgba(0,0,0,0.52) 0%,
+          rgba(0,0,0,0.3) 60%,
+          rgba(0,40,20,0.7) 100%
+        ), url('/Images/hero-img.jpg') center/cover no-repeat;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        gap: 1.2rem;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        height: 80px;
+        background: linear-gradient(to top, #f0fdf4, transparent);
+      }
+
+      .hero-logo {
+        border-radius: 50%;
+        width: 5rem;
+        box-shadow: 0 0 0 4px rgba(255,255,255,0.3);
+        animation: heroLogoPulse 3s ease-in-out infinite;
+      }
+      @keyframes heroLogoPulse {
+        0%, 100% { box-shadow: 0 0 0 4px rgba(255,255,255,0.3); }
+        50%       { box-shadow: 0 0 0 10px rgba(255,255,255,0.1); }
+      }
+
+      .hero-text { font-size: 3.5rem; font-weight: 800; text-shadow: 0 2px 20px rgba(0,0,0,0.4); }
+
+      #hero-p {
+        font-size: 1.2rem;
+        max-width: 500px;
+        opacity: 0.92;
+        text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+      }
+
+      .hero-sect-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .hero-but {
+        font-size: 1.05rem;
+        padding: 0.75rem 2rem;
+        height: auto;
+        width: auto;
+        min-width: 10rem;
+        border-radius: 50px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+        transition: all 0.3s ease;
+        font-weight: 700;
+      }
+      .indv-button { background: linear-gradient(135deg, #10b981, #059669); }
+      .indv-button:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(5,150,105,0.5); }
+      .comm-button { background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); border: 2px solid rgba(255,255,255,0.6); }
+      .comm-button:hover { background: rgba(255,255,255,0.25); transform: translateY(-3px); }
+
+      /* Scroll indicator */
+      .scroll-hint {
+        position: absolute;
+        bottom: 90px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: rgba(255,255,255,0.7);
+        font-size: 0.8rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.3rem;
+        animation: bounce 2s infinite;
+      }
+      .scroll-hint span { font-size: 1.5rem; }
+      @keyframes bounce {
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        50%       { transform: translateX(-50%) translateY(8px); }
+      }
+
+      /* Hero content section */
+      .hero-content {
+        background: linear-gradient(135deg, #f0fdf4, #ecfdf5, #f0f9ff);
+        padding: 5rem 2rem 4rem;
+        height: auto !important;
+      }
+      .under-hero-header {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #064e3b;
+        margin-bottom: 0.5rem;
+      }
+
+      /* Cards */
+      .card-con { gap: 1.5rem; }
+      .card {
+        width: 22rem;
+        height: auto;
+        min-height: 13rem;
+        padding: 1.5rem;
+        border-radius: 20px;
+        border: 1px solid rgba(16,185,129,0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 4px 20px -5px rgba(16,185,129,0.15);
+      }
+      .card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px -8px rgba(16,185,129,0.3); }
+
+      /* Article section */
+      .art-header {
+        background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+        padding: 3rem 1rem 1rem;
+        font-size: 2rem;
+        font-weight: 800;
+        color: #064e3b;
+      }
+
+      .article-con {
+        background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+        padding: 1.5rem 2rem 4rem;
+        gap: 1.5rem;
+      }
+
+      .art-item {
+        background: white;
+        border-radius: 20px;
+        border: 1px solid #d1fae5;
+        padding: 1.5rem;
+        width: 20rem;
+        box-shadow: 0 4px 20px -5px rgba(5,150,105,0.1);
+        transition: all 0.3s ease;
+      }
+      .art-item:hover { transform: translateY(-4px); box-shadow: 0 12px 35px -8px rgba(5,150,105,0.2); }
+
+      .art-icons {
+        width: 4.5rem;
+        height: 4.5rem;
+        border-radius: 50%;
+        object-fit: cover;
+        background: #ecfdf5;
+        padding: 0.3rem;
+        box-shadow: 0 4px 12px rgba(5,150,105,0.2);
+      }
+
+      .art-item-header { font-size: 1.1rem; color: #065f46; }
+      .art-item p { color: #6b7280; font-size: 0.9rem; line-height: 1.7; }
+
+      /* Stats counter section */
+      .stats-section {
+        background: linear-gradient(135deg, #064e3b, #065f46, #047857);
+        padding: 4rem 2rem;
+        text-align: center;
+        color: white;
+      }
+      .stats-grid {
+        display: flex;
+        justify-content: center;
+        gap: 4rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+      }
+      .stat-item { display: flex; flex-direction: column; align-items: center; }
+      .stat-num { font-size: 3rem; font-weight: 800; color: #6ee7b7; }
+      .stat-label { font-family: "Parastoo",serif; font-size: 0.9rem; opacity: 0.8; margin-top: 0.3rem; }
+
+      /* Footer */
+      .footer { background: linear-gradient(135deg, #111827, #1f2937); }
+      .footer-header { font-size: 1.8rem; }
+    </style>
+  </head>
+  <body class="bg-gray-50 font-sans">
+
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="nav-container dir">
+        <a href="index.html" class="ar nav-logo nav-link">
+          <img class="logo-img" src="Images/logos/comp.png" alt="Logo" />
+          البصمة الكاربونية
+        </a>
+        <div class="nav-links">
+          <a href="index.html"     id="home-li"  class="ar nav-link home-li">الرئيسية</a>
+          <a href="./About.html"   id="about-li" class="ar nav-link about-li">التفاصيل</a>
+          <a href="./calculator.html" id="cal-li" class="ar nav-link cal-li">المقياس</a>
+          <a href="./Community.html" id="con-li" class="ar nav-link con-li">مقياس المجتمع</a>
+          <a href="#" id="engbut" class="ar nav-link engbut">English</a>
+        </div>
+        <div id="menu-btn" class="menu-btn">
+          <span class="menu-line"></span>
+          <span class="menu-line"></span>
+          <span class="menu-line"></span>
+        </div>
+      </div>
+    </nav>
+
+    <div id="overlay" class="overlay hidden"></div>
+    <div id="side-menu" class="side-menu">
+      <a href="/index.html"     id="home-li"  class="ar nav-link home-li">الرئيسية</a>
+      <a href="/About.html"     id="about-li" class="ar nav-link about-li">التفاصيل</a>
+      <a href="/calculator.html" id="cal-li"  class="ar nav-link cal-li">المقياس</a>
+      <a href="/Community.html" id="con-li"   class="ar nav-link con-li">مقياس المجتمع</a>
+      <a href="#" id="engbut" class="ar nav-link engbut">English</a>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+      <img class="hero-logo" src="/Images/logos/mother-earth-day.gif" alt="Earth" />
+      <h1 class="ar hero-text" id="hero-text">البصمة الكاربونية</h1>
+      <p class="ar" id="hero-p">أحسب مقدار الكاربون الذي تطلقه وابدأ رحلتك نحو مستقبل أخضر</p>
+      <div class="hero-sect-buttons">
+        <a id="indv-but" class="hero-but indv-button ar" href="/calculator.html">🌿 احسب الآن</a>
+        <a id="comm-but" class="hero-but comm-button ar" href="/Community.html">🏘️ بصمة المجتمعات</a>
+      </div>
+      <div class="scroll-hint">
+        <span>↓</span>
+        <small class="ar" style="font-family:'Parastoo',serif">اكتشف أكثر</small>
+      </div>
+    </div>
+
+    <!-- Under Hero: Cards -->
+    <div class="hero-content fade-in">
+      <h1 id="under-hero-header" class="ar under-hero-header">أفهم مبادئ البصمة الكاربونية</h1>
+      <div id="card-container" class="card-con dir">
+
+        <div class="card dir">
+          <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" fill="#198642" viewBox="0 0 256 256">
+            <path d="M138.54,149.46C106.62,96.25,149.18,43.05,239.63,48.37,245,138.82,191.75,181.39,138.54,149.46ZM16.26,88.26c-3.8,64.61,34.21,95,72.21,72.21C111.27,122.47,80.87,84.46,16.26,88.26Z" opacity="0.2"></path>
+            <path d="M247.63,47.89a8,8,0,0,0-7.52-7.52c-51.76-3-93.32,12.74-111.18,42.22-11.8,19.48-11.78,43.16-.16,65.74a71.37,71.37,0,0,0-14.17,26.95L98.33,159c7.82-16.33,7.52-33.36-1-47.49C84.09,89.73,53.62,78,15.79,80.27a8,8,0,0,0-7.52,7.52c-2.23,37.83,9.46,68.3,31.25,81.5A45.82,45.82,0,0,0,63.44,176,54.58,54.58,0,0,0,87,170.33l25,25V224a8,8,0,0,0,16,0V194.51a55.61,55.61,0,0,1,12.27-35,73.91,73.91,0,0,0,33.31,8.4,60.9,60.9,0,0,0,31.83-8.86C234.89,141.21,250.67,99.65,247.63,47.89Z"></path>
+          </svg>
+          <h3 id="first-card-h" class="ar font-bold" style="margin-top:0.8rem;color:#065f46">ما هي البصمة الكاربونية؟</h3>
+          <p id="first-card-p" class="ar" style="color:#6b7280;font-size:0.9rem;line-height:1.7">يقيس البصمة الكربونية إجمالي انبعاثات الغازات الدفيئة التي تسببها بشكل مباشر وغير مباشر فرد أو منظمة أو منتج.</p>
+        </div>
+
+        <div class="card dir">
+          <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" fill="#194d86" viewBox="0 0 256 256">
+            <path d="M224,128a96,96,0,1,1-96-96A96,96,0,0,1,224,128Z" opacity="0.2"></path>
+            <path d="M128,24h0A104,104,0,1,0,232,128,104.12,104.12,0,0,0,128,24Zm88,104a87.61,87.61,0,0,1-3.33,24H174.16a157.44,157.44,0,0,0,0-48h38.51A87.61,87.61,0,0,1,216,128ZM102,168H154a115.11,115.11,0,0,1-26,45A115.27,115.27,0,0,1,102,168Zm-3.9-16a140.84,140.84,0,0,1,0-48h59.88a140.84,140.84,0,0,1,0,48ZM40,128a87.61,87.61,0,0,1,3.33-24H81.84a157.44,157.44,0,0,0,0,48H43.33A87.61,87.61,0,0,1,40,128ZM154,88H102a115.11,115.11,0,0,1,26-45A115.27,115.27,0,0,1,154,88Zm52.33,0H170.71a135.28,135.28,0,0,0-22.3-45.6A88.29,88.29,0,0,1,206.37,88ZM107.59,42.4A135.28,135.28,0,0,0,85.29,88H49.63A88.29,88.29,0,0,1,107.59,42.4ZM49.63,168H85.29a135.28,135.28,0,0,0,22.3,45.6A88.29,88.29,0,0,1,49.63,168Zm98.78,45.6a135.28,135.28,0,0,0,22.3-45.6h35.66A88.29,88.29,0,0,1,148.41,213.6Z"></path>
+          </svg>
+          <h3 id="second-card-h" class="ar font-bold" style="margin-top:0.8rem;color:#1e3a8a">لماذا هذا مهم؟</h3>
+          <p id="second-card-p" class="ar" style="color:#6b7280;font-size:0.9rem;line-height:1.7">إن تقليل انبعاثات الكربون أمر بالغ الأهمية لمكافحة تغير المناخ والحفاظ على كوكبنا للأجيال القادمة.</p>
+        </div>
+
+        <div class="card dir">
+          <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" fill="#6e1986" viewBox="0 0 256 256">
+            <path d="M224,128a96,96,0,1,1-96-96A96,96,0,0,1,224,128Z" opacity="0.2"></path>
+            <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm40-104v48a8,8,0,0,1-8,8H112a8,8,0,0,1,0-16h28.69L90.34,101.66a8,8,0,0,1,11.32-11.32L152,140.69V112a8,8,0,0,1,16,0Z"></path>
+          </svg>
+          <h3 id="third-card-h" class="ar font-bold" style="margin-top:0.8rem;color:#581c87">اتخذ إجراءً</h3>
+          <p id="third-card-p" class="ar" style="color:#6b7280;font-size:0.9rem;line-height:1.7">يمكن أن تحدث التغييرات الصغيرة في الحياة اليومية فرقًا كبيرًا في تقليل تأثيرك البيئي وإلهام الآخرين.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Article Section -->
+    <h1 id="art-header" class="ar art-header fade-in">🌱 قلّل بصمتك الكاربونية</h1>
+    <div class="article-con fade-in">
+
+      <div class="art-item">
+        <img class="art-icons" src="/Images/logos/bus.gif" alt="Bus">
+        <h2 id="art-item-1-header" class="ar art-item-header">النقل العام</h2>
+        <p id="art-item-1-p" class="ar"></p>
+      </div>
+
+      <div class="art-item">
+        <img class="art-icons" src="/Images/logos/electric-power.gif" alt="Energy">
+        <h2 id="art-item-2-header" class="ar art-item-header">ترشيد الطاقة</h2>
+        <p id="art-item-2-p" class="ar"></p>
+      </div>
+
+      <div class="art-item">
+        <img class="art-icons" src="/Images/logos/leaf.gif" alt="Food">
+        <h2 id="art-item-3-header" class="ar art-item-header">أكل باعتدال</h2>
+        <p id="art-item-3-p" class="ar"></p>
+      </div>
+
+      <div class="art-item">
+        <img class="art-icons" src="/Images/logos/escalator.gif" alt="Shopping">
+        <h2 id="art-item-4-header" class="ar art-item-header">تسوق باعتدال</h2>
+        <p id="art-item-4-p" class="ar"></p>
+      </div>
+
+      <div class="art-item">
+        <img class="art-icons" src="/Images/logos/idea.gif" alt="Awareness">
+        <h2 id="art-item-5-header" class="ar art-item-header">التوعية</h2>
+        <p id="art-item-5-p" class="ar"></p>
+      </div>
+
+    </div>
+
+    <!-- CTA Strip -->
+    <div class="fade-in" style="background:linear-gradient(135deg,#059669,#065f46);padding:3rem 2rem;text-align:center;color:white;">
+      <h2 class="ar" style="font-size:1.8rem;font-weight:800;margin-bottom:0.8rem">ابدأ رحلتك الآن 🌍</h2>
+      <p class="ar" style="opacity:0.85;margin-bottom:1.5rem;font-size:1rem">احسب بصمتك الكربونية مجاناً واحصل على نتائجك على بريدك الإلكتروني</p>
+      <a href="/calculator.html" class="ar" style="background:white;color:#059669;padding:0.8rem 2.5rem;border-radius:50px;font-weight:800;font-size:1.05rem;text-decoration:none;box-shadow:0 8px 25px rgba(0,0,0,0.2);transition:all 0.3s">🌿 احسب الآن</a>
+    </div>
+
+    <!-- Footer -->
+    <main class="footer fade-in">
+      <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" fill="#00FF00" viewBox="0 0 256 256">
+        <path d="M138.54,149.46C106.62,96.25,149.18,43.05,239.63,48.37,245,138.82,191.75,181.39,138.54,149.46ZM16.26,88.26c-3.8,64.61,34.21,95,72.21,72.21C111.27,122.47,80.87,84.46,16.26,88.26Z" opacity="0.2"></path>
+        <path d="M247.63,47.89a8,8,0,0,0-7.52-7.52c-51.76-3-93.32,12.74-111.18,42.22-11.8,19.48-11.78,43.16-.16,65.74a71.37,71.37,0,0,0-14.17,26.95L98.33,159c7.82-16.33,7.52-33.36-1-47.49C84.09,89.73,53.62,78,15.79,80.27a8,8,0,0,0-7.52,7.52c-2.23,37.83,9.46,68.3,31.25,81.5A45.82,45.82,0,0,0,63.44,176,54.58,54.58,0,0,0,87,170.33l25,25V224a8,8,0,0,0,16,0V194.51a55.61,55.61,0,0,1,12.27-35,73.91,73.91,0,0,0,33.31,8.4,60.9,60.9,0,0,0,31.83-8.86C234.89,141.21,250.67,99.65,247.63,47.89Z"></path>
+      </svg>
+      <h1 id="footer-header" class="ar footer-header">Together for a Greener Future</h1>
+      <h4 id="footer-p" class="ar footer-p">Every action counts. Start your journey towards a sustainable lifestyle today.</h4>
+      <div class="footer-content">
+        <div class="footer-el el-1"><p class="footer-el-header">7.9B</p><p id="footer-1" class="ar footer-el-p">Tons CO₂ Annually</p></div>
+        <div class="footer-el el-2"><p class="footer-el-header">1.5°C</p><p id="footer-2" class="ar footer-el-p">Target Limit</p></div>
+        <div class="footer-el el-3"><p class="footer-el-header">2030</p><p id="footer-3" class="ar footer-el-p">Climate Goals</p></div>
+      </div>
+    </main>
+
+    <script src="src/app.js"></script>
+  </body>
+</html>
