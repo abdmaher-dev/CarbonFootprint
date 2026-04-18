@@ -231,6 +231,6 @@ app.get('/check-reminders', async (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 app.get('/', (req, res) => {
-  res.send('API is running');
+  res.send('./index.html');
 });
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
