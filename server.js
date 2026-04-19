@@ -6,13 +6,21 @@ const axios = require('axios');
 
 const app = express();
 
+// Required for Railway (runs behind a proxy)
+app.set('trust proxy', 1);
+
 app.use(cors());
 app.use(express.json());
 
 /* ================= MongoDB Connection ================= */
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI, {
+  serverSelectionTimeoutMS: 5000
+})
   .then(() => console.log('✅ MongoDB Connected'))
-  .catch(err => console.error('❌ MongoDB error:', err));
+  .catch(err => {
+    console.error('❌ MongoDB error:', err.message);
+    process.exit(1); // Fail fast so Railway restarts the container
+  });
 
 /* ================= Schema ================= */
 const userSchema = new mongoose.Schema({
@@ -227,14 +235,12 @@ app.get('/check-reminders', async (req, res) => {
 });
 
 /* ================= Start Server ================= */
-
-
 const PORT = process.env.PORT || 5000;
 const path = require('path');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+app.use((req, res) => {
+  res.status(404).send('Not Found');
 });
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

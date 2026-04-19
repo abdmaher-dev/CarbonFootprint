@@ -8,7 +8,8 @@ const EMAILJS_SERVICE_ID  = "service_blw3koo";
 const EMAILJS_TEMPLATE_ID = "template_sole5be";
 
 // ================== Backend API URL ==================
-const BACKEND_URL = "http://localhost:5000"; // change when deployed
+// Relative URL works both locally and on Railway/any host
+const BACKEND_URL = "";
 
 // Save email to MongoDB
 async function saveEmailToDB(email) {
