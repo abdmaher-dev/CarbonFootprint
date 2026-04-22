@@ -77,8 +77,8 @@ img { max-width: 100%; height: auto; display: block; }
 .nav-logo:hover { opacity: 0.85; }
 
 .logo-img {
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   object-fit: contain;
   border-radius: 8px;
 }

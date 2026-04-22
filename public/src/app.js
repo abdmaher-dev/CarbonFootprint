@@ -64,7 +64,7 @@ const BACKEND_URL = "";
 const TRANSLATIONS = {
   "en": {
     "dir":"ltr","langButton":"العربية",
-    "nav":{"home":"Home","about":"About","calc":"Calculator","contact":"Community Calculator","logo":"<img class='logo-img' src='/Images/logos/comp.png' alt='Logo'/> Carbon Footprint"},
+    "nav":{"home":"Home","about":"About","calc":"Calculator","contact":"Community Calculator","logo":"<img class='logo-img' src='/Images/IMG_7912.webp' alt='Logo'/> Carbon Footprint"},
     "hero":{"title":"Carbon Footprint","paragraph":"Discover the impact you have on the environment through a precise and easy-to-use carbon footprint calculator. Start reducing your energy consumption and daily emissions for a more sustainable lifestyle.","under":"Understanding Carbon Footprint","indvBut":"Calculate Now","commBut":"Community Print","scrollHint":"Discover more"},
     "cta":{"title":"Start Your Journey Now 🌍","para":"Calculate your carbon footprint for free and get your results delivered to your email.","btn":"🌿 Calculate Now"},
     "cards":{"first":{"h":"What is Carbon Footprint?","p":"A carbon footprint measures the total greenhouse gas emissions caused directly and indirectly by an individual, organization, or product."},"second":{"h":"Why It Matters","p":"Reducing carbon emissions is crucial for combating climate change and preserving our planet for future generations."},"third":{"h":"Take Action","p":"Small changes in daily life can significantly reduce your environmental impact and inspire others to do the same."}},
@@ -152,7 +152,7 @@ const TRANSLATIONS = {
   },
   "ar": {
     "dir":"rtl","langButton":"English",
-    "nav":{"home":"الرئيسية","about":"التفاصيل","calc":"المقياس","contact":"مقياس المجتمع","logo":"<img class='logo-img' src='/Images/logos/comp.png' alt='Logo'/> البصمة الكاربونية"},
+    "nav":{"home":"الرئيسية","about":"التفاصيل","calc":"المقياس","contact":"مقياس المجتمع","logo":"<img class='logo-img' src='/Images/IMG_7912.webp' alt='Logo'/> البصمة الكاربونية"},
     "hero":{"title":"البصمة الكاربونية","paragraph":"تعرف على مقدار تأثيرك على البيئة من خلال أداة دقيقة وسهلة الاستخدام لحساب البصمة الكربونية. ابدأ في تقليل استهلاكك للطاقة وانبعاثاتك اليومية نحو أسلوب حياة أكثر استدامة.","under":"افهم مبادئ البصمة الكاربونية","indvBut":"احسب الآن","commBut":"بصمة المجتمع","scrollHint":"اكتشف أكثر"},
     "cta":{"title":"ابدأ رحلتك الآن 🌍","para":"احسب بصمتك الكربونية مجاناً واحصل على نتائجك على بريدك الإلكتروني","btn":"🌿 احسب الآن"},
     "cards":{"first":{"h":"ما هي البصمة الكاربونية؟","p":"يقيس البصمة الكربونية إجمالي انبعاثات الغازات الدفيئة التي تسببها بشكل مباشر وغير مباشر فرد أو منظمة أو منتج."},"second":{"h":"لماذا هذا مهم؟","p":"إن تقليل انبعاثات الكربون أمر بالغ الأهمية لمكافحة تغير المناخ والحفاظ على كوكبنا للأجيال القادمة."},"third":{"h":"اتخذ إجراءً","p":"يمكن أن تحدث التغييرات الصغيرة في الحياة اليومية فرقًا كبيرًا في تقليل تأثيرك البيئي وإلهام الآخرين."}},
