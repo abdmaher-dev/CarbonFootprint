@@ -1,734 +1,314 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>التفاصيل — البصمة الكاربونية</title>
-  <link rel="stylesheet" href="dist/output.css" />
-  <link rel="stylesheet" href="/src/input.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Parastoo:wght@400..700&display=swap" rel="stylesheet" />
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>التفاصيل — البصمة الكاربونية</title>
 
-  <style>
-    :root {
-      --green-deep: #064e3b;
-      --green-mid:  #059669;
-      --green-light: #6ee7b7;
-      --green-bg:   #f0fdf4;
-      --text-dark:  #111827;
-      --text-mid:   #374151;
-      --text-soft:  #6b7280;
-    }
 
-    body { background: #fafafa; }
-
-    /* ===== HERO SECTION ===== */
-    .about-hero {
-      background: linear-gradient(160deg, #064e3b 0%, #065f46 40%, #047857 70%, #059669 100%);
-      min-height: 55vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      color: white;
-      padding: 5rem 2rem 6rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .about-hero::before {
-      content: '';
-      position: absolute;
-      top: -100px; right: -100px;
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(110,231,183,0.15) 0%, transparent 70%);
-      border-radius: 50%;
-    }
-    .about-hero::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 80px;
-      background: linear-gradient(to top, #fafafa, transparent);
-    }
-    .about-hero-tag {
-      background: rgba(110,231,183,0.2);
-      border: 1px solid rgba(110,231,183,0.4);
-      border-radius: 50px;
-      padding: 0.4rem 1.2rem;
-      font-family: "Parastoo", serif;
-      font-size: 0.85rem;
-      margin-bottom: 1.5rem;
-      display: inline-block;
-    }
-    .about-hero h1 {
-      font-family: "Parastoo", serif;
-      font-size: clamp(2.2rem, 5vw, 3.8rem);
-      font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 1.2rem;
-      position: relative; z-index: 1;
-    }
-    .about-hero p {
-      font-family: "Parastoo", serif;
-      font-size: 1.15rem;
-      opacity: 0.85;
-      max-width: 600px;
-      line-height: 1.9;
-      position: relative; z-index: 1;
-    }
-    /* Floating particles */
-    .particle {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(110,231,183,0.1);
-      animation: floatParticle linear infinite;
-    }
-    @keyframes floatParticle {
-      0%   { transform: translateY(0) rotate(0deg); opacity: 0.5; }
-      100% { transform: translateY(-500px) rotate(360deg); opacity: 0; }
-    }
-
-    /* ===== LAYOUT ===== */
-    .about-container {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 0 1.5rem;
-    }
-
-    /* ===== WHAT IS SECTION ===== */
-    .what-is-section {
-      padding: 5rem 0;
-      direction: rtl;
-    }
-    .section-eyebrow {
-      font-family: "Parastoo", serif;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--green-mid);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      margin-bottom: 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .section-eyebrow::before { content: ''; width: 24px; height: 2px; background: var(--green-mid); display: block; }
-
-    .big-title {
-      font-family: "Parastoo", serif;
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
-      font-weight: 800;
-      color: var(--green-deep);
-      line-height: 1.3;
-      margin-bottom: 1.5rem;
-    }
-    .body-text {
-      font-family: "Parastoo", serif;
-      font-size: 1.05rem;
-      color: var(--text-mid);
-      line-height: 2;
-    }
-
-    /* What is — split layout */
-    .what-split {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
-    }
-    @media (max-width: 768px) { .what-split { grid-template-columns: 1fr; gap: 2rem; } }
-
-    .definition-card {
-      background: linear-gradient(135deg, var(--green-bg), #ecfdf5);
-      border-radius: 24px;
-      padding: 2.5rem;
-      border: 1px solid #a7f3d0;
-      position: relative;
-      overflow: hidden;
-    }
-    .definition-card::before {
-      content: '"';
-      position: absolute;
-      top: -20px; right: 20px;
-      font-size: 8rem;
-      color: rgba(5,150,105,0.1);
-      font-family: Georgia, serif;
-      line-height: 1;
-    }
-    .definition-text {
-      font-family: "Parastoo", serif;
-      font-size: 1.1rem;
-      color: var(--green-deep);
-      line-height: 2;
-      font-weight: 500;
-      position: relative; z-index: 1;
-    }
-
-    /* ===== STAT STRIP ===== */
-    .stat-strip {
-      background: linear-gradient(135deg, #064e3b, #065f46);
-      border-radius: 24px;
-      padding: 3rem 2rem;
-      margin: 3rem 0;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-      text-align: center;
-      color: white;
-    }
-    @media (max-width: 768px) { .stat-strip { grid-template-columns: repeat(2, 1fr); } }
-    .stat-item .stat-num { font-size: 2.2rem; font-weight: 800; color: #6ee7b7; }
-    .stat-item .stat-label { font-family: "Parastoo",serif; font-size: 0.82rem; opacity: 0.75; margin-top: 0.3rem; }
-
-    /* ===== WHY IT MATTERS ===== */
-    .why-section {
-      padding: 4rem 0;
-      direction: rtl;
-    }
-    .why-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.5rem;
-      margin-top: 2.5rem;
-    }
-    @media (max-width: 600px) { .why-grid { grid-template-columns: 1fr; } }
-
-    .why-card {
-      background: white;
-      border-radius: 20px;
-      padding: 1.8rem;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 4px 20px -5px rgba(0,0,0,0.06);
-      transition: all 0.3s ease;
-      display: flex;
-      gap: 1.2rem;
-      align-items: flex-start;
-    }
-    .why-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px -8px rgba(5,150,105,0.15); border-color: #a7f3d0; }
-    .why-icon { font-size: 2.2rem; flex-shrink: 0; }
-    .why-card h3 { font-family: "Parastoo",serif; font-weight: 700; color: var(--green-deep); font-size: 1.05rem; margin-bottom: 0.5rem; }
-    .why-card p  { font-family: "Parastoo",serif; font-size: 0.88rem; color: var(--text-soft); line-height: 1.8; }
-
-    /* ===== SOURCES SECTION ===== */
-    .sources-section {
-      background: linear-gradient(135deg, #f8fafc, #f0fdf4);
-      padding: 5rem 0;
-      direction: rtl;
-    }
-    .sources-timeline {
-      margin-top: 2.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      position: relative;
-    }
-    .sources-timeline::before {
-      content: '';
-      position: absolute;
-      right: 22px; top: 0; bottom: 0;
-      width: 2px;
-      background: linear-gradient(to bottom, var(--green-mid), transparent);
-    }
-    .source-item {
-      display: flex;
-      gap: 1.5rem;
-      align-items: flex-start;
-      padding: 1.2rem 0;
-      position: relative;
-    }
-    .source-dot {
-      width: 46px; height: 46px;
-      background: white;
-      border: 2px solid var(--green-mid);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      flex-shrink: 0;
-      box-shadow: 0 4px 12px rgba(5,150,105,0.15);
-      z-index: 1;
-    }
-    .source-content { flex: 1; padding-top: 0.5rem; }
-    .source-content h3 { font-family: "Parastoo",serif; font-weight: 700; color: var(--green-deep); margin-bottom: 0.3rem; }
-    .source-content p  { font-family: "Parastoo",serif; font-size: 0.88rem; color: var(--text-soft); line-height: 1.8; }
-    .source-pct {
-      font-weight: 800;
-      color: var(--green-mid);
-      font-size: 1.3rem;
-      flex-shrink: 0;
-      padding-top: 0.5rem;
-      min-width: 3.5rem;
-      text-align: left;
-    }
-
-    /* ===== EFFECTS SECTION ===== */
-    .effects-section {
-      padding: 5rem 0;
-      direction: rtl;
-    }
-    .effects-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.5rem;
-      margin-top: 2.5rem;
-    }
-    @media (max-width: 600px) { .effects-grid { grid-template-columns: 1fr; } }
-
-    .effect-card {
-      border-radius: 20px;
-      padding: 1.8rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .effect-card::after {
-      content: '';
-      position: absolute;
-      bottom: -20px; left: -20px;
-      width: 80px; height: 80px;
-      border-radius: 50%;
-      opacity: 0.15;
-    }
-    .effect-card.heat    { background: linear-gradient(135deg, #fff7ed, #fed7aa); border: 1px solid #fdba74; }
-    .effect-card.heat::after { background: #f97316; }
-    .effect-card.flood   { background: linear-gradient(135deg, #eff6ff, #bfdbfe); border: 1px solid #93c5fd; }
-    .effect-card.flood::after { background: #3b82f6; }
-    .effect-card.drought { background: linear-gradient(135deg, #fefce8, #fef08a); border: 1px solid #fde047; }
-    .effect-card.drought::after { background: #eab308; }
-    .effect-card.health  { background: linear-gradient(135deg, #fdf4ff, #f0abfc); border: 1px solid #e879f9; }
-    .effect-card.health::after { background: #a21caf; }
-    .effect-card .eff-icon { font-size: 2.5rem; margin-bottom: 0.8rem; display: block; }
-    .effect-card h3 { font-family: "Parastoo",serif; font-weight: 700; font-size: 1.05rem; color: #1f2937; margin-bottom: 0.5rem; }
-    .effect-card p  { font-family: "Parastoo",serif; font-size: 0.88rem; color: #374151; line-height: 1.8; }
-    .effect-card .severity {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 700;
-      font-family: "Parastoo",serif;
-      padding: 0.2rem 0.8rem;
-      border-radius: 50px;
-      margin-top: 0.8rem;
-    }
-    .effect-card.heat .severity    { background: #fed7aa; color: #9a3412; }
-    .effect-card.flood .severity   { background: #bfdbfe; color: #1e3a8a; }
-    .effect-card.drought .severity { background: #fef08a; color: #713f12; }
-    .effect-card.health .severity  { background: #f0abfc; color: #701a75; }
-
-    /* ===== REDUCE SECTION ===== */
-    .reduce-section {
-      background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
-      padding: 5rem 0;
-      direction: rtl;
-    }
-    .reduce-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.2rem;
-      margin-top: 2.5rem;
-    }
-    @media (max-width: 768px) { .reduce-grid { grid-template-columns: 1fr; } }
-
-    .reduce-card {
-      background: white;
-      border-radius: 18px;
-      padding: 1.5rem;
-      border: 1px solid #d1fae5;
-      text-align: center;
-      box-shadow: 0 4px 15px -5px rgba(5,150,105,0.1);
-      transition: all 0.3s ease;
-    }
-    .reduce-card:hover { transform: translateY(-5px); box-shadow: 0 16px 35px -8px rgba(5,150,105,0.2); }
-    .reduce-card .rc-icon { font-size: 2.4rem; margin-bottom: 0.8rem; }
-    .reduce-card h3 { font-family: "Parastoo",serif; font-weight: 700; color: var(--green-deep); margin-bottom: 0.5rem; font-size: 0.95rem; }
-    .reduce-card p  { font-family: "Parastoo",serif; font-size: 0.82rem; color: var(--text-soft); line-height: 1.7; }
-    .reduce-card .impact {
-      display: inline-block;
-      background: #ecfdf5;
-      color: var(--green-mid);
-      font-size: 0.75rem;
-      font-weight: 700;
-      font-family: "Parastoo",serif;
-      padding: 0.2rem 0.7rem;
-      border-radius: 50px;
-      margin-top: 0.6rem;
-      border: 1px solid #a7f3d0;
-    }
-
-    /* ===== CHART EMBED ===== */
-    .chart-section {
-      padding: 4rem 0;
-      direction: rtl;
-    }
-    .chart-wrapper {
-      background: white;
-      border-radius: 24px;
-      padding: 2rem;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 8px 30px -10px rgba(0,0,0,0.08);
-      overflow: hidden;
-      margin-top: 2rem;
-    }
-    .chart-note {
-      font-family: "Parastoo",serif;
-      font-size: 0.8rem;
-      color: var(--text-soft);
-      margin-top: 1rem;
-      padding: 0.8rem 1rem;
-      background: #fffbeb;
-      border-radius: 10px;
-      border: 1px solid #fde68a;
-      line-height: 1.7;
-    }
-
-    /* ===== CTA SECTION ===== */
-    .cta-section {
-      background: linear-gradient(135deg, #064e3b, #059669);
-      padding: 5rem 2rem;
-      text-align: center;
-      color: white;
-    }
-    .cta-section h2 { font-family: "Parastoo",serif; font-size: 2.2rem; font-weight: 800; margin-bottom: 1rem; }
-    .cta-section p  { font-family: "Parastoo",serif; opacity: 0.85; margin-bottom: 2rem; font-size: 1.05rem; }
-    .cta-btn {
-      background: white;
-      color: #059669;
-      font-family: "Parastoo",serif;
-      font-weight: 800;
-      font-size: 1.1rem;
-      padding: 1rem 3rem;
-      border-radius: 50px;
-      text-decoration: none;
-      display: inline-block;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-      transition: all 0.3s ease;
-    }
-    .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.25); }
-
-    /* divider */
-    .section-divider {
-      width: 60px; height: 4px;
-      background: linear-gradient(to right, var(--green-mid), var(--green-light));
-      border-radius: 2px;
-      margin: 1rem 0 0;
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="nav-container dir">
-      <a href="/index.html" class="ar nav-logo nav-link">
-        <img class="logo-img" src="/Images/logos/comp.png" alt="Logo" />
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Parastoo:wght@400..700&amp;display=swap" rel="stylesheet"/>
+<link href="/style.css" rel="stylesheet"/></head>
+<body class="about-page">
+<!-- Navbar -->
+<nav class="navbar">
+<div class="nav-container dir">
+<a class="ar nav-logo nav-link" href="/index.html">
+<img alt="Logo" class="logo-img" src="/Images/logos/comp.png"/>
         البصمة الكاربونية
       </a>
-      <div class="nav-links">
-        <a href="/index.html"      id="home-li"  class="ar nav-link home-li">الرئيسية</a>
-        <a href="/About.html"      id="about-li" class="ar nav-link about-li">التفاصيل</a>
-        <a href="/calculator.html" id="cal-li"   class="ar nav-link cal-li">المقياس</a>
-        <a href="/Community.html"  id="con-li"   class="ar nav-link con-li">مقياس المجتمع</a>
-        <a href="#" id="engbut" class="ar nav-link engbut">English</a>
-      </div>
-      <div id="menu-btn" class="menu-btn">
-        <span class="menu-line"></span>
-        <span class="menu-line"></span>
-        <span class="menu-line"></span>
-      </div>
-              <img class="logo-img" src="./Images/IMG_7911.webp" alt=""/>
-
-    </div>
-  </nav>
-
-  <div id="overlay" class="overlay hidden"></div>
-  <div id="side-menu" class="side-menu">
-    <a href="/index.html"      id="home-li"  class="ar nav-link home-li">الرئيسية</a>
-    <a href="/About.html"      id="about-li" class="ar nav-link about-li">التفاصيل</a>
-    <a href="/calculator.html" id="cal-li"   class="ar nav-link cal-li">المقياس</a>
-    <a href="/Community.html"  id="con-li"   class="ar nav-link con-li">مقياس المجتمع</a>
-    <a href="#" id="engbut" class="ar nav-link engbut">English</a>
-  </div>
-
-  <!-- Hero -->
-  <div class="about-hero">
-    <div class="particle" style="width:60px;height:60px;left:10%;top:20%;animation-duration:8s;animation-delay:0s"></div>
-    <div class="particle" style="width:30px;height:30px;left:80%;top:60%;animation-duration:12s;animation-delay:2s"></div>
-    <div class="particle" style="width:45px;height:45px;left:60%;top:30%;animation-duration:10s;animation-delay:4s"></div>
-    <span class="about-hero-tag ar">🌿 دليل البصمة الكاربونية</span>
-    <h1 id="about-text-1" class="ar">ما هي البصمة الكربونية؟</h1>
-    <p id="about-text-2" class="ar">كل شيء تفعله يُنتج كمية من CO₂ — اكتشف ما هذا يعني وكيف يؤثر على مستقبل كوكبنا</p>
-  </div>
-
-  <!-- WHAT IS -->
-  <section class="what-is-section fade-in">
-    <div class="about-container">
-      <div class="what-split">
-        <div>
-          <div class="section-eyebrow ar">التعريف</div>
-          <h2 class="big-title ar" id="about-header-def">فهم البصمة الكربونية</h2>
-          <div class="section-divider"></div>
-          <p class="body-text ar" style="margin-top:1.5rem" id="about-text-2-full">
+<div class="nav-links">
+<a class="ar nav-link home-li" href="/index.html" id="home-li">الرئيسية</a>
+<a class="ar nav-link about-li" href="/About.html" id="about-li">التفاصيل</a>
+<a class="ar nav-link cal-li" href="/calculator.html" id="cal-li">المقياس</a>
+<a class="ar nav-link con-li" href="/Community.html" id="con-li">مقياس المجتمع</a>
+<a class="ar nav-link engbut" href="#" id="engbut">English</a>
+</div>
+<div class="menu-btn" id="menu-btn">
+<span class="menu-line"></span>
+<span class="menu-line"></span>
+<span class="menu-line"></span>
+</div>
+<img alt="" class="logo-img" src="./Images/IMG_7911.webp"/>
+</div>
+</nav>
+<div class="overlay hidden" id="overlay"></div>
+<div class="side-menu" id="side-menu">
+<a class="ar nav-link home-li" href="/index.html" id="home-li">الرئيسية</a>
+<a class="ar nav-link about-li" href="/About.html" id="about-li">التفاصيل</a>
+<a class="ar nav-link cal-li" href="/calculator.html" id="cal-li">المقياس</a>
+<a class="ar nav-link con-li" href="/Community.html" id="con-li">مقياس المجتمع</a>
+<a class="ar nav-link engbut" href="#" id="engbut">English</a>
+</div>
+<!-- Hero -->
+<div class="about-hero">
+<div class="particle" style="width:60px;height:60px;left:10%;top:20%;animation-duration:8s;animation-delay:0s"></div>
+<div class="particle" style="width:30px;height:30px;left:80%;top:60%;animation-duration:12s;animation-delay:2s"></div>
+<div class="particle" style="width:45px;height:45px;left:60%;top:30%;animation-duration:10s;animation-delay:4s"></div>
+<span class="about-hero-tag ar">🌿 دليل البصمة الكاربونية</span>
+<h1 class="ar" id="about-text-1">ما هي البصمة الكربونية؟</h1>
+<p class="ar" id="about-text-2">كل شيء تفعله يُنتج كمية من CO₂ — اكتشف ما هذا يعني وكيف يؤثر على مستقبل كوكبنا</p>
+</div>
+<!-- WHAT IS -->
+<section class="what-is-section fade-in">
+<div class="about-container">
+<div class="what-split">
+<div>
+<div class="section-eyebrow ar">التعريف</div>
+<h2 class="big-title ar" id="about-header-def">فهم البصمة الكربونية</h2>
+<div class="section-divider"></div>
+<p class="body-text ar" id="about-text-2-full" style="margin-top:1.5rem">
             البصمة الكربونية هي إجمالي كمية غازات الاحتباس الحراري التي ينتجها
             الإنسان من أنشطته اليومية. تشمل ثاني أكسيد الكربون (CO₂) والميثان (CH₄)
             وأكسيد النيتروز (N₂O) وغازات أخرى، وتُقاس بوحدة "طن مكافئ CO₂".
           </p>
-          <p class="body-text ar" style="margin-top:1rem">
+<p class="body-text ar" style="margin-top:1rem">
             تنقسم إلى نوعين: <strong style="color:#059669">المباشرة</strong> — كعوادم السيارة وحرق الوقود في المنزل،
             و<strong style="color:#059669">غير المباشرة</strong> — كالطاقة المستخدمة لإنتاج ما نشتريه من سلع وخدمات.
           </p>
-        </div>
-        <div class="definition-card">
-          <p class="definition-text ar">
+</div>
+<div class="definition-card">
+<p class="definition-text ar">
             "البصمة الكربونية هي المرآة التي تعكس تأثيرنا على الكوكب.
             قياسها هو الخطوة الأولى نحو تقليلها."
           </p>
-          <div style="margin-top:2rem;display:flex;flex-direction:column;gap:0.8rem">
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:0.8rem 1rem;background:white;border-radius:12px;border:1px solid #d1fae5">
-              <span class="ar" style="font-family:'Parastoo',serif;font-size:0.85rem;color:#374151">متوسط الفرد عالمياً</span>
-              <strong style="color:#059669;font-size:1.1rem">4.7 طن/سنة</strong>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:0.8rem 1rem;background:white;border-radius:12px;border:1px solid #d1fae5">
-              <span class="ar" style="font-family:'Parastoo',serif;font-size:0.85rem;color:#374151">الهدف المناخي للفرد</span>
-              <strong style="color:#10b981;font-size:1.1rem">2 طن/سنة</strong>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:0.8rem 1rem;background:white;border-radius:12px;border:1px solid #fecaca">
-              <span class="ar" style="font-family:'Parastoo',serif;font-size:0.85rem;color:#374151">أعلى دولة (قطر)</span>
-              <strong style="color:#ef4444;font-size:1.1rem">32 طن/سنة</strong>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Stat strip -->
-      <div class="stat-strip fade-in">
-        <div class="stat-item"><div class="stat-num">37B</div><div class="stat-label ar">طن CO₂ سنوياً من البشر</div></div>
-        <div class="stat-item"><div class="stat-num">1.2°C</div><div class="stat-label ar">ارتفاع حرارة الأرض منذ 1880</div></div>
-        <div class="stat-item"><div class="stat-num">420 ppm</div><div class="stat-label ar">تركيز CO₂ في الغلاف الجوي</div></div>
-        <div class="stat-item"><div class="stat-num">2050</div><div class="stat-label ar">هدف الحياد الكربوني العالمي</div></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- WHY IT MATTERS -->
-  <section class="why-section fade-in">
-    <div class="about-container">
-      <div class="section-eyebrow ar">الأهمية</div>
-      <h2 class="big-title ar" id="about-header-2">لماذا تُعد البصمة الكربونية مهمة؟</h2>
-      <div class="section-divider"></div>
-      <p class="body-text ar" style="margin-top:1.5rem;max-width:700px" id="about-p-2">
+<div style="margin-top:2rem;display:flex;flex-direction:column;gap:0.8rem">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:0.8rem 1rem;background:white;border-radius:12px;border:1px solid #d1fae5">
+<span class="ar" style="font-family:'Parastoo',serif;font-size:0.85rem;color:#374151">متوسط الفرد عالمياً</span>
+<strong style="color:#059669;font-size:1.1rem">4.7 طن/سنة</strong>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:0.8rem 1rem;background:white;border-radius:12px;border:1px solid #d1fae5">
+<span class="ar" style="font-family:'Parastoo',serif;font-size:0.85rem;color:#374151">الهدف المناخي للفرد</span>
+<strong style="color:#10b981;font-size:1.1rem">2 طن/سنة</strong>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:0.8rem 1rem;background:white;border-radius:12px;border:1px solid #fecaca">
+<span class="ar" style="font-family:'Parastoo',serif;font-size:0.85rem;color:#374151">أعلى دولة (قطر)</span>
+<strong style="color:#ef4444;font-size:1.1rem">32 طن/سنة</strong>
+</div>
+</div>
+</div>
+</div>
+<!-- Stat strip -->
+<div class="stat-strip fade-in">
+<div class="stat-item"><div class="stat-num">37B</div><div class="stat-label ar">طن CO₂ سنوياً من البشر</div></div>
+<div class="stat-item"><div class="stat-num">1.2°C</div><div class="stat-label ar">ارتفاع حرارة الأرض منذ 1880</div></div>
+<div class="stat-item"><div class="stat-num">420 ppm</div><div class="stat-label ar">تركيز CO₂ في الغلاف الجوي</div></div>
+<div class="stat-item"><div class="stat-num">2050</div><div class="stat-label ar">هدف الحياد الكربوني العالمي</div></div>
+</div>
+</div>
+</section>
+<!-- WHY IT MATTERS -->
+<section class="why-section fade-in">
+<div class="about-container">
+<div class="section-eyebrow ar">الأهمية</div>
+<h2 class="big-title ar" id="about-header-2">لماذا تُعد البصمة الكربونية مهمة؟</h2>
+<div class="section-divider"></div>
+<p class="body-text ar" id="about-p-2" style="margin-top:1.5rem;max-width:700px">
         ارتفاع مستويات ثاني أكسيد الكربون يُشكّل أحد أخطر التحديات التي يواجهها كوكب الأرض.
         كل طن إضافي من CO₂ يبقى في الغلاف الجوي لأكثر من <strong>100 سنة</strong>، مُتراكماً التأثيرات على الأجيال القادمة.
       </p>
-      <div class="why-grid">
-        <div class="why-card">
-          <div class="why-icon">🌡️</div>
-          <div>
-            <h3 id="about-why-1">الاحترار العالمي</h3>
-            <p>ارتفعت حرارة الأرض بمقدار 1.2 درجة مئوية منذ عصر ما قبل الصناعة. إذا تجاوزنا 2 درجة، ستكون العواقب وخيمة وغير قابلة للعكس.</p>
-          </div>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">🏔️</div>
-          <div>
-            <h3 id="about-why-2">ذوبان الجليد</h3>
-            <p>فقدت القارة القطبية الجنوبية أكثر من 3 تريليون طن من الجليد منذ التسعينيات، مما يرفع مستوى البحار بشكل ملموس كل عام.</p>
-          </div>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">🌾</div>
-          <div>
-            <h3 id="about-why-3">الأمن الغذائي</h3>
-            <p>تغير الأنماط المطرية والجفاف يُهددان المحاصيل الزراعية. يُقدّر العلماء انخفاض الإنتاج الغذائي بنسبة 25% بحلول 2050 إذا استمر التدهور.</p>
-          </div>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">💸</div>
-          <div>
-            <h3 id="about-why-4">الخسائر الاقتصادية</h3>
-            <p>تُكلّف الكوارث المناخية العالم أكثر من 300 مليار دولار سنوياً. التصرف الآن أرخص بـ 5 أضعاف من التعامل مع تداعيات التغير المناخي لاحقاً.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SOURCES -->
-  <section class="sources-section fade-in">
-    <div class="about-container">
-      <div class="section-eyebrow ar">المصادر</div>
-      <h2 class="big-title ar" id="about-header-3">أهم مصادر الانبعاثات الكربونية</h2>
-      <div class="section-divider"></div>
-      <div class="sources-timeline" style="margin-top:2.5rem">
-        <div class="source-item">
-          <div class="source-dot">⚡</div>
-          <div class="source-content">
-            <h3 id="about-li-1" class="ar">توليد الكهرباء والطاقة</h3>
-            <p class="ar">محطات الفحم والغاز الطبيعي تولّد أكثر من ثلث انبعاثات العالم. التحول للطاقة الشمسية والرياح هو الحل الأسرع تأثيراً.</p>
-          </div>
-          <div class="source-pct ar">34%</div>
-        </div>
-        <div class="source-item">
-          <div class="source-dot">🚗</div>
-          <div class="source-content">
-            <h3 id="about-li-2" class="ar">النقل والمواصلات</h3>
-            <p class="ar">السيارات والطائرات والسفن تستهلك مليارات اللترات من الوقود الأحفوري يومياً. السيارة الكهربائية وحدها تقلل بصمتك بنسبة 50%.</p>
-          </div>
-          <div class="source-pct ar">16%</div>
-        </div>
-        <div class="source-item">
-          <div class="source-dot">🏭</div>
-          <div class="source-content">
-            <h3 id="about-li-3" class="ar">الصناعة والتصنيع</h3>
-            <p class="ar">إنتاج الحديد والإسمنت والمواد الكيميائية يتطلب حرق كميات هائلة من الوقود. الصناعة مسؤولة عن سُدس الانبعاثات العالمية.</p>
-          </div>
-          <div class="source-pct ar">24%</div>
-        </div>
-        <div class="source-item">
-          <div class="source-dot">🐄</div>
-          <div class="source-content">
-            <h3 id="about-li-4" class="ar">الزراعة وتربية الحيوانات</h3>
-            <p class="ar">الماشية تُنتج الميثان، وهو غاز أشد تأثيراً من CO₂ بـ 80 مرة. تقليل استهلاك اللحوم الحمراء هو من أقوى التغييرات الفردية.</p>
-          </div>
-          <div class="source-pct ar">11%</div>
-        </div>
-        <div class="source-item">
-          <div class="source-dot">🏗️</div>
-          <div class="source-content">
-            <h3 id="about-li-5" class="ar">البناء والتشييد</h3>
-            <p class="ar">المباني مسؤولة عن 40% من استهلاك الطاقة عالمياً عبر التدفئة والتبريد والإضاءة. العزل الجيد يخفض الفاتورة والبصمة معاً.</p>
-          </div>
-          <div class="source-pct ar">6%</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- EFFECTS -->
-  <section class="effects-section fade-in">
-    <div class="about-container">
-      <div class="section-eyebrow ar">التأثيرات</div>
-      <h2 class="big-title ar" id="about-effects-header1">تأثير البصمة الكربونية على البيئة</h2>
-      <div class="section-divider"></div>
-      <div class="effects-grid">
-        <div class="effect-card heat">
-          <span class="eff-icon">🔥</span>
-          <h3 id="about-effects-header3" class="ar">موجات الحر الشديدة</h3>
-          <p id="about-effects-p2" class="ar">سجّلت الأرض أعلى درجات حرارة في التاريخ المسجّل خلال السنوات الأخيرة. موجات الحر التي كانت تحدث مرة كل 50 سنة باتت تحدث كل 10 سنوات.</p>
-          <span class="severity ar">تأثير عالٍ جداً ⚠️</span>
-        </div>
-        <div class="effect-card flood">
-          <span class="eff-icon">🌊</span>
-          <h3 id="about-effects-header4" class="ar">ارتفاع مستوى البحار</h3>
-          <p id="about-effects-p3" class="ar">ارتفع متوسط مستوى البحار بأكثر من 20 سم منذ 1900. التوقعات تشير إلى ارتفاع إضافي يتراوح بين 0.3 و1 متر بحلول 2100، مما يُهدد المدن الساحلية.</p>
-          <span class="severity ar">خطر طويل الأمد 🌊</span>
-        </div>
-        <div class="effect-card drought">
-          <span class="eff-icon">🌵</span>
-          <h3 id="about-effects-header2" class="ar">الجفاف وشح المياه</h3>
-          <p id="about-effects-p1" class="ar">يعاني أكثر من 2 مليار شخص من شح المياه. التغير المناخي يُضاعف هذه الأزمة عبر تغيير أنماط الأمطار وجفاف المصادر المائية التقليدية.</p>
-          <span class="severity ar">أزمة متصاعدة 📈</span>
-        </div>
-        <div class="effect-card health">
-          <span class="eff-icon">🫁</span>
-          <h3 id="about-effects-header5" class="ar">تلوث الهواء والصحة</h3>
-          <p id="about-effects-p4" class="ar">يتسبب تلوث الهواء في وفاة 7 مليون شخص سنوياً حول العالم. الجسيمات الدقيقة تخترق الرئتين وتُسبب أمراض القلب والسرطان والربو.</p>
-          <span class="severity ar">7 مليون وفاة/سنة 💔</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- REDUCE -->
-  <section class="reduce-section fade-in">
-    <div class="about-container">
-      <div class="section-eyebrow ar">الحلول</div>
-      <h2 class="big-title ar" id="aboutReduceHeader">كيف تقلل بصمتك الكربونية؟</h2>
-      <div class="section-divider"></div>
-      <div class="reduce-grid">
-        <div class="reduce-card">
-          <div class="rc-icon">🚌</div>
-          <h3 id="aboutReduceP1" class="ar">النقل الأخضر</h3>
-          <p class="ar">استخدم المواصلات العامة أو الدراجة أو المشي. كل كيلومتر على الدراجة بدل السيارة يوفر 150 غرام CO₂.</p>
-          <span class="impact ar">↓ 2.4 طن/سنة</span>
-        </div>
-        <div class="reduce-card">
-          <div class="rc-icon">⚡</div>
-          <h3 id="aboutReduceP2" class="ar">كفاءة الطاقة</h3>
-          <p class="ar">استبدل المصابيح بـ LED وأجهزة الطاقة العالية بموفّرة للطاقة. المصباح LED يوفر 90% من استهلاك المصباح العادي.</p>
-          <span class="impact ar">↓ 1.5 طن/سنة</span>
-        </div>
-        <div class="reduce-card">
-          <div class="rc-icon">🥦</div>
-          <h3 id="aboutReduceP3" class="ar">نظام غذائي نباتي</h3>
-          <p class="ar">تقليل اللحوم الحمراء يوم واحد في الأسبوع يوفر 340 كغم CO₂ سنوياً. النظام النباتي الكامل يخفض البصمة الغذائية بنسبة 73%.</p>
-          <span class="impact ar">↓ 0.7 طن/سنة</span>
-        </div>
-        <div class="reduce-card">
-          <div class="rc-icon">☀️</div>
-          <h3 id="aboutReduceP4" class="ar">الطاقة المتجددة</h3>
-          <p class="ar">الألواح الشمسية على المنزل تُلغي 80% من فاتورة الكهرباء وتُنتج طاقة نظيفة لـ 25 سنة. استثمار يُقلص البصمة بشكل جذري.</p>
-          <span class="impact ar">↓ 1.8 طن/سنة</span>
-        </div>
-        <div class="reduce-card">
-          <div class="rc-icon">♻️</div>
-          <h3 id="aboutReduceP5" class="ar">إعادة التدوير</h3>
-          <p class="ar">إعادة تدوير الألومنيوم توفر 95% من طاقة الإنتاج الجديد. فرز النفايات وتقليل الهدر الغذائي يُقلصان البصمة بشكل ملموس.</p>
-          <span class="impact ar">↓ 0.5 طن/سنة</span>
-        </div>
-        <div class="reduce-card">
-          <div class="rc-icon">🌳</div>
-          <h3 class="ar">زراعة الأشجار</h3>
-          <p class="ar">شجرة واحدة تمتص 22 كغم CO₂ سنوياً. زراعة عشر أشجار يعوّض تقريباً بصمة شخص واعٍ بيئياً في العراق والدول المجاورة.</p>
-          <span class="impact ar">↓ 0.22 طن/شجرة</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CHART -->
-  <section class="chart-section fade-in">
-    <div class="about-container">
-      <div class="section-eyebrow ar">البيانات</div>
-      <h2 class="big-title ar">البصمة الكربونية في العراق</h2>
-      <div class="section-divider"></div>
-      <div class="chart-wrapper">
-        <div style="position:relative;width:100%;height:0;padding-top:52%;overflow:hidden;border-radius:12px;">
-          <iframe loading="lazy" style="position:absolute;width:100%;height:100%;top:0;left:0;border:none"
-            src="https://www.canva.com/design/DAG-wvpxQs4/R-mLmCfjLgr6_jlIBzTG7g/view?embed"
-            allowfullscreen allow="fullscreen">
-          </iframe>
-        </div>
-        <p id="warn-p" class="chart-note ar">
+<div class="why-grid">
+<div class="why-card">
+<div class="why-icon">🌡️</div>
+<div>
+<h3 id="about-why-1">الاحترار العالمي</h3>
+<p>ارتفعت حرارة الأرض بمقدار 1.2 درجة مئوية منذ عصر ما قبل الصناعة. إذا تجاوزنا 2 درجة، ستكون العواقب وخيمة وغير قابلة للعكس.</p>
+</div>
+</div>
+<div class="why-card">
+<div class="why-icon">🏔️</div>
+<div>
+<h3 id="about-why-2">ذوبان الجليد</h3>
+<p>فقدت القارة القطبية الجنوبية أكثر من 3 تريليون طن من الجليد منذ التسعينيات، مما يرفع مستوى البحار بشكل ملموس كل عام.</p>
+</div>
+</div>
+<div class="why-card">
+<div class="why-icon">🌾</div>
+<div>
+<h3 id="about-why-3">الأمن الغذائي</h3>
+<p>تغير الأنماط المطرية والجفاف يُهددان المحاصيل الزراعية. يُقدّر العلماء انخفاض الإنتاج الغذائي بنسبة 25% بحلول 2050 إذا استمر التدهور.</p>
+</div>
+</div>
+<div class="why-card">
+<div class="why-icon">💸</div>
+<div>
+<h3 id="about-why-4">الخسائر الاقتصادية</h3>
+<p>تُكلّف الكوارث المناخية العالم أكثر من 300 مليار دولار سنوياً. التصرف الآن أرخص بـ 5 أضعاف من التعامل مع تداعيات التغير المناخي لاحقاً.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SOURCES -->
+<section class="sources-section fade-in">
+<div class="about-container">
+<div class="section-eyebrow ar">المصادر</div>
+<h2 class="big-title ar" id="about-header-3">أهم مصادر الانبعاثات الكربونية</h2>
+<div class="section-divider"></div>
+<div class="sources-timeline" style="margin-top:2.5rem">
+<div class="source-item">
+<div class="source-dot">⚡</div>
+<div class="source-content">
+<h3 class="ar" id="about-li-1">توليد الكهرباء والطاقة</h3>
+<p class="ar">محطات الفحم والغاز الطبيعي تولّد أكثر من ثلث انبعاثات العالم. التحول للطاقة الشمسية والرياح هو الحل الأسرع تأثيراً.</p>
+</div>
+<div class="source-pct ar">34%</div>
+</div>
+<div class="source-item">
+<div class="source-dot">🚗</div>
+<div class="source-content">
+<h3 class="ar" id="about-li-2">النقل والمواصلات</h3>
+<p class="ar">السيارات والطائرات والسفن تستهلك مليارات اللترات من الوقود الأحفوري يومياً. السيارة الكهربائية وحدها تقلل بصمتك بنسبة 50%.</p>
+</div>
+<div class="source-pct ar">16%</div>
+</div>
+<div class="source-item">
+<div class="source-dot">🏭</div>
+<div class="source-content">
+<h3 class="ar" id="about-li-3">الصناعة والتصنيع</h3>
+<p class="ar">إنتاج الحديد والإسمنت والمواد الكيميائية يتطلب حرق كميات هائلة من الوقود. الصناعة مسؤولة عن سُدس الانبعاثات العالمية.</p>
+</div>
+<div class="source-pct ar">24%</div>
+</div>
+<div class="source-item">
+<div class="source-dot">🐄</div>
+<div class="source-content">
+<h3 class="ar" id="about-li-4">الزراعة وتربية الحيوانات</h3>
+<p class="ar">الماشية تُنتج الميثان، وهو غاز أشد تأثيراً من CO₂ بـ 80 مرة. تقليل استهلاك اللحوم الحمراء هو من أقوى التغييرات الفردية.</p>
+</div>
+<div class="source-pct ar">11%</div>
+</div>
+<div class="source-item">
+<div class="source-dot">🏗️</div>
+<div class="source-content">
+<h3 class="ar" id="about-li-5">البناء والتشييد</h3>
+<p class="ar">المباني مسؤولة عن 40% من استهلاك الطاقة عالمياً عبر التدفئة والتبريد والإضاءة. العزل الجيد يخفض الفاتورة والبصمة معاً.</p>
+</div>
+<div class="source-pct ar">6%</div>
+</div>
+</div>
+</div>
+</section>
+<!-- EFFECTS -->
+<section class="effects-section fade-in">
+<div class="about-container">
+<div class="section-eyebrow ar">التأثيرات</div>
+<h2 class="big-title ar" id="about-effects-header1">تأثير البصمة الكربونية على البيئة</h2>
+<div class="section-divider"></div>
+<div class="effects-grid">
+<div class="effect-card heat">
+<span class="eff-icon">🔥</span>
+<h3 class="ar" id="about-effects-header3">موجات الحر الشديدة</h3>
+<p class="ar" id="about-effects-p2">سجّلت الأرض أعلى درجات حرارة في التاريخ المسجّل خلال السنوات الأخيرة. موجات الحر التي كانت تحدث مرة كل 50 سنة باتت تحدث كل 10 سنوات.</p>
+<span class="severity ar">تأثير عالٍ جداً ⚠️</span>
+</div>
+<div class="effect-card flood">
+<span class="eff-icon">🌊</span>
+<h3 class="ar" id="about-effects-header4">ارتفاع مستوى البحار</h3>
+<p class="ar" id="about-effects-p3">ارتفع متوسط مستوى البحار بأكثر من 20 سم منذ 1900. التوقعات تشير إلى ارتفاع إضافي يتراوح بين 0.3 و1 متر بحلول 2100، مما يُهدد المدن الساحلية.</p>
+<span class="severity ar">خطر طويل الأمد 🌊</span>
+</div>
+<div class="effect-card drought">
+<span class="eff-icon">🌵</span>
+<h3 class="ar" id="about-effects-header2">الجفاف وشح المياه</h3>
+<p class="ar" id="about-effects-p1">يعاني أكثر من 2 مليار شخص من شح المياه. التغير المناخي يُضاعف هذه الأزمة عبر تغيير أنماط الأمطار وجفاف المصادر المائية التقليدية.</p>
+<span class="severity ar">أزمة متصاعدة 📈</span>
+</div>
+<div class="effect-card health">
+<span class="eff-icon">🫁</span>
+<h3 class="ar" id="about-effects-header5">تلوث الهواء والصحة</h3>
+<p class="ar" id="about-effects-p4">يتسبب تلوث الهواء في وفاة 7 مليون شخص سنوياً حول العالم. الجسيمات الدقيقة تخترق الرئتين وتُسبب أمراض القلب والسرطان والربو.</p>
+<span class="severity ar">7 مليون وفاة/سنة 💔</span>
+</div>
+</div>
+</div>
+</section>
+<!-- REDUCE -->
+<section class="reduce-section fade-in">
+<div class="about-container">
+<div class="section-eyebrow ar">الحلول</div>
+<h2 class="big-title ar" id="aboutReduceHeader">كيف تقلل بصمتك الكربونية؟</h2>
+<div class="section-divider"></div>
+<div class="reduce-grid">
+<div class="reduce-card">
+<div class="rc-icon">🚌</div>
+<h3 class="ar" id="aboutReduceP1">النقل الأخضر</h3>
+<p class="ar">استخدم المواصلات العامة أو الدراجة أو المشي. كل كيلومتر على الدراجة بدل السيارة يوفر 150 غرام CO₂.</p>
+<span class="impact ar">↓ 2.4 طن/سنة</span>
+</div>
+<div class="reduce-card">
+<div class="rc-icon">⚡</div>
+<h3 class="ar" id="aboutReduceP2">كفاءة الطاقة</h3>
+<p class="ar">استبدل المصابيح بـ LED وأجهزة الطاقة العالية بموفّرة للطاقة. المصباح LED يوفر 90% من استهلاك المصباح العادي.</p>
+<span class="impact ar">↓ 1.5 طن/سنة</span>
+</div>
+<div class="reduce-card">
+<div class="rc-icon">🥦</div>
+<h3 class="ar" id="aboutReduceP3">نظام غذائي نباتي</h3>
+<p class="ar">تقليل اللحوم الحمراء يوم واحد في الأسبوع يوفر 340 كغم CO₂ سنوياً. النظام النباتي الكامل يخفض البصمة الغذائية بنسبة 73%.</p>
+<span class="impact ar">↓ 0.7 طن/سنة</span>
+</div>
+<div class="reduce-card">
+<div class="rc-icon">☀️</div>
+<h3 class="ar" id="aboutReduceP4">الطاقة المتجددة</h3>
+<p class="ar">الألواح الشمسية على المنزل تُلغي 80% من فاتورة الكهرباء وتُنتج طاقة نظيفة لـ 25 سنة. استثمار يُقلص البصمة بشكل جذري.</p>
+<span class="impact ar">↓ 1.8 طن/سنة</span>
+</div>
+<div class="reduce-card">
+<div class="rc-icon">♻️</div>
+<h3 class="ar" id="aboutReduceP5">إعادة التدوير</h3>
+<p class="ar">إعادة تدوير الألومنيوم توفر 95% من طاقة الإنتاج الجديد. فرز النفايات وتقليل الهدر الغذائي يُقلصان البصمة بشكل ملموس.</p>
+<span class="impact ar">↓ 0.5 طن/سنة</span>
+</div>
+<div class="reduce-card">
+<div class="rc-icon">🌳</div>
+<h3 class="ar">زراعة الأشجار</h3>
+<p class="ar">شجرة واحدة تمتص 22 كغم CO₂ سنوياً. زراعة عشر أشجار يعوّض تقريباً بصمة شخص واعٍ بيئياً في العراق والدول المجاورة.</p>
+<span class="impact ar">↓ 0.22 طن/شجرة</span>
+</div>
+</div>
+</div>
+</section>
+<!-- CHART -->
+<section class="chart-section fade-in">
+<div class="about-container">
+<div class="section-eyebrow ar">البيانات</div>
+<h2 class="big-title ar">البصمة الكربونية في العراق</h2>
+<div class="section-divider"></div>
+<div class="chart-wrapper">
+<div style="position:relative;width:100%;height:0;padding-top:52%;overflow:hidden;border-radius:12px;">
+<iframe allow="fullscreen" allowfullscreen="" loading="lazy" src="https://www.canva.com/design/DAG-wvpxQs4/R-mLmCfjLgr6_jlIBzTG7g/view?embed" style="position:absolute;width:100%;height:100%;top:0;left:0;border:none">
+</iframe>
+</div>
+<p class="chart-note ar" id="warn-p">
           ⚠️ تنبيه مهم: هذه الأرقام تقديرات تقريبية بناءً على أنماط استهلاك الطاقة والنقل والصناعة في كل دولة.
           لا تمثل بيانات رسمية معتمدة من هيئات دولية.
         </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section class="cta-section fade-in">
-    <h2 class="ar">جاهز لمعرفة بصمتك؟ 🌿</h2>
-    <p class="ar">احسب بصمتك الكربونية الشخصية في دقيقتين واحصل على تقرير مخصص بالذكاء الاصطناعي</p>
-    <a href="/calculator.html" class="cta-btn ar" id="fast-link">احسب الآن مجاناً ←</a>
-  </section>
-
-  <!-- Footer -->
-  <main class="footer fade-in">
-    <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" fill="#00FF00" viewBox="0 0 256 256">
-      <path d="M138.54,149.46C106.62,96.25,149.18,43.05,239.63,48.37,245,138.82,191.75,181.39,138.54,149.46ZM16.26,88.26c-3.8,64.61,34.21,95,72.21,72.21C111.27,122.47,80.87,84.46,16.26,88.26Z" opacity="0.2"></path>
-      <path d="M247.63,47.89a8,8,0,0,0-7.52-7.52c-51.76-3-93.32,12.74-111.18,42.22-11.8,19.48-11.78,43.16-.16,65.74a71.37,71.37,0,0,0-14.17,26.95L98.33,159c7.82-16.33,7.52-33.36-1-47.49C84.09,89.73,53.62,78,15.79,80.27a8,8,0,0,0-7.52,7.52c-2.23,37.83,9.46,68.3,31.25,81.5A45.82,45.82,0,0,0,63.44,176,54.58,54.58,0,0,0,87,170.33l25,25V224a8,8,0,0,0,16,0V194.51a55.61,55.61,0,0,1,12.27-35,73.91,73.91,0,0,0,33.31,8.4,60.9,60.9,0,0,0,31.83-8.86C234.89,141.21,250.67,99.65,247.63,47.89Z"></path>
-    </svg>
-    <h1 id="footer-header" class="ar footer-header">Together for a Greener Future</h1>
-    <h4 id="footer-p" class="ar footer-p">Every action counts. Start your journey towards a sustainable lifestyle today.</h4>
-    <div class="footer-content">
-      <div class="footer-el el-1"><p class="footer-el-header">7.9B</p><p id="footer-1" class="ar footer-el-p">Tons CO₂ Annually</p></div>
-      <div class="footer-el el-2"><p class="footer-el-header">1.5°C</p><p id="footer-2" class="ar footer-el-p">Target Limit</p></div>
-      <div class="footer-el el-3"><p class="footer-el-header">2030</p><p id="footer-3" class="ar footer-el-p">Climate Goals</p></div>
-    </div>
-  </main>
-
-  <script src="src/app.js"></script>
+</div>
+</div>
+</section>
+<!-- CTA -->
+<section class="cta-section fade-in">
+<h2 class="ar">جاهز لمعرفة بصمتك؟ 🌿</h2>
+<p class="ar">احسب بصمتك الكربونية الشخصية في دقيقتين واحصل على تقرير مخصص بالذكاء الاصطناعي</p>
+<a class="cta-btn ar" href="/calculator.html" id="fast-link">احسب الآن مجاناً ←</a>
+</section>
+<!-- Footer -->
+<main class="footer fade-in">
+<svg fill="#00FF00" height="44" viewbox="0 0 256 256" width="44" xmlns="http://www.w3.org/2000/svg">
+<path d="M138.54,149.46C106.62,96.25,149.18,43.05,239.63,48.37,245,138.82,191.75,181.39,138.54,149.46ZM16.26,88.26c-3.8,64.61,34.21,95,72.21,72.21C111.27,122.47,80.87,84.46,16.26,88.26Z" opacity="0.2"></path>
+<path d="M247.63,47.89a8,8,0,0,0-7.52-7.52c-51.76-3-93.32,12.74-111.18,42.22-11.8,19.48-11.78,43.16-.16,65.74a71.37,71.37,0,0,0-14.17,26.95L98.33,159c7.82-16.33,7.52-33.36-1-47.49C84.09,89.73,53.62,78,15.79,80.27a8,8,0,0,0-7.52,7.52c-2.23,37.83,9.46,68.3,31.25,81.5A45.82,45.82,0,0,0,63.44,176,54.58,54.58,0,0,0,87,170.33l25,25V224a8,8,0,0,0,16,0V194.51a55.61,55.61,0,0,1,12.27-35,73.91,73.91,0,0,0,33.31,8.4,60.9,60.9,0,0,0,31.83-8.86C234.89,141.21,250.67,99.65,247.63,47.89Z"></path>
+</svg>
+<h1 class="ar footer-header" id="footer-header">Together for a Greener Future</h1>
+<h4 class="ar footer-p" id="footer-p">Every action counts. Start your journey towards a sustainable lifestyle today.</h4>
+<div class="footer-content">
+<div class="footer-el el-1"><p class="footer-el-header">7.9B</p><p class="ar footer-el-p" id="footer-1">Tons CO₂ Annually</p></div>
+<div class="footer-el el-2"><p class="footer-el-header">1.5°C</p><p class="ar footer-el-p" id="footer-2">Target Limit</p></div>
+<div class="footer-el el-3"><p class="footer-el-header">2030</p><p class="ar footer-el-p" id="footer-3">Climate Goals</p></div>
+</div>
+</main>
+<script src="src/app.js"></script>
 </body>
 </html>

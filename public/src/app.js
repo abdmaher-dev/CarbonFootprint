@@ -6,239 +6,22 @@ const EMAILJS_SERVICE_ID  = "service_blw3koo";
 const EMAILJS_TEMPLATE_ID = "template_sole5be";
 const BACKEND_URL = "";
 
-// ================================================================
-//  💧 TOOLTIP STYLES (injected once)
-// ================================================================
-(function injectTooltipStyles() {
-  if (document.getElementById('tt-styles')) return;
-  const s = document.createElement('style');
-  s.id = 'tt-styles';
-  s.textContent = `
-    .tt-wrap { display:inline-flex; align-items:center; gap:6px; width:100%; }
-    .tt-btn {
-      display:inline-flex; align-items:center; justify-content:center;
-      width:18px; height:18px; border-radius:50%;
-      background:#d1fae5; color:#059669;
-      font-size:11px; font-weight:800;
-      border:1.5px solid #6ee7b7; cursor:pointer;
-      flex-shrink:0; line-height:1;
-      transition:background 0.2s, color 0.2s;
-      font-family:Arial,sans-serif; padding:0;
-    }
-    .tt-btn:hover, .tt-btn.active { background:#059669; color:white; }
-    .tt-box {
-      position:absolute; z-index:9999;
-      bottom:calc(100% + 8px);
-      background:#064e3b; color:#ecfdf5;
-      font-family:"Parastoo",serif;
-      font-size:0.8rem; line-height:1.7;
-      padding:0.6rem 0.9rem;
-      border-radius:10px; width:220px;
-      box-shadow:0 6px 20px rgba(0,0,0,0.2);
-      pointer-events:none; opacity:0;
-      transform:translateY(4px);
-      transition:opacity 0.2s, transform 0.2s;
-    }
-    .tt-btn.active + .tt-box { opacity:1; transform:translateY(0); pointer-events:auto; }
-    [dir="ltr"] .tt-box { right:0; left:auto; }
-    [dir="rtl"] .tt-box { left:0; right:auto; }
-    .tt-box::after {
-      content:''; position:absolute; bottom:-6px;
-      border:6px solid transparent;
-      border-top-color:#064e3b; border-bottom:none;
-    }
-    [dir="ltr"] .tt-box::after { right:4px; }
-    [dir="rtl"] .tt-box::after { left:4px; }
-    .form-label { position:relative; }
-    .tt-btn.comm-tt { background:#e0f2fe; color:#0891b2; border-color:#7dd3fc; }
-    .tt-btn.comm-tt:hover,.tt-btn.comm-tt.active { background:#0891b2; color:white; }
-    .comm-tt.active + .tt-box { background:#0c4a6e; }
-    .comm-tt.active + .tt-box::after { border-top-color:#0c4a6e; }
-  `;
-  document.head.appendChild(s);
-})();
 
 // ================================================================
-//  TRANSLATIONS
+//  TRANSLATIONS  — loaded from lang.json at runtime
 // ================================================================
-const TRANSLATIONS = {
-  "en": {
-    "dir":"ltr","langButton":"العربية",
-    "nav":{"home":"Home","about":"About","calc":"Calculator","contact":"Community Calculator","logo":"<img class='logo-img' src='/Images/IMG_7912.webp' alt='Logo'/> Carbon Footprint"},
-    "hero":{"title":"Carbon Footprint","paragraph":"Discover the impact you have on the environment through a precise and easy-to-use carbon footprint calculator. Start reducing your energy consumption and daily emissions for a more sustainable lifestyle.","under":"Understanding Carbon Footprint","indvBut":"Calculate Now","commBut":"Community Print","scrollHint":"Discover more"},
-    "cta":{"title":"Start Your Journey Now 🌍","para":"Calculate your carbon footprint for free and get your results delivered to your email.","btn":"🌿 Calculate Now"},
-    "cards":{"first":{"h":"What is Carbon Footprint?","p":"A carbon footprint measures the total greenhouse gas emissions caused directly and indirectly by an individual, organization, or product."},"second":{"h":"Why It Matters","p":"Reducing carbon emissions is crucial for combating climate change and preserving our planet for future generations."},"third":{"h":"Take Action","p":"Small changes in daily life can significantly reduce your environmental impact and inspire others to do the same."}},
-    "art":{"header":"Reduce Your Carbon Footprint","firstHeader":"Use Public Transport","secondHeader":"Save Energy","thirdHeader":"Eat Plant-Based","fourthHeader":"Shop Sustainably","fifthHeader":"Awareness","Firstp":"Reduce emissions by 4.6 metric tons annually per person","Secondp":"Switch to LED bulbs and unplug devices when not in use","Thirdp":"Reduce food emissions by up to 73%","Fourthp":"Choose eco-friendly products and reduce consumption","fifthp":"Calculating your carbon footprint helps raise awareness among others about the impact of our daily actions"},
-    "footer":{"header":"Together for a Greener Future","p":"Every action counts. Start your journey towards a sustainable lifestyle today.","first":"Tons CO₂ Annually","second":"Target Limit","third":"Climate Goals"},
-    "about":{
-      "heroTag":"🌿 Carbon Footprint Guide","text1":"What is Carbon Footprint?","text2":"Everything you do produces CO₂ — discover what this means and how it affects our planet's future",
-      "eyebrow1":"Definition","headerDef":"Understanding Carbon Footprint",
-      "text2Full":"The carbon footprint is the total amount of greenhouse gases produced by human activities, including CO₂, methane (CH₄), and nitrous oxide (N₂O), measured in tons of CO₂ equivalent.",
-      "text2Types":"It is divided into two types: <strong style='color:#059669'>Direct</strong> — such as car exhaust and home fuel burning, and <strong style='color:#059669'>Indirect</strong> — such as the energy used to produce goods and services we buy.",
-      "defQuote":"\"The carbon footprint is the mirror that reflects our impact on the planet. Measuring it is the first step toward reducing it.\"",
-      "statAvg":"Global average per person","statGoal":"Climate target per person","statTop":"Highest country (Qatar)",
-      "statLabel1":"Billion tons CO₂ annually from humans","statLabel2":"Earth temperature rise since 1880","statLabel3":"CO₂ concentration in the atmosphere","statLabel4":"Global carbon neutrality target",
-      "eyebrow2":"Importance","text3":"Why is Carbon Footprint Important?","text4":"Rising CO₂ levels pose one of the most dangerous threats to our planet. Every additional ton of CO₂ stays in the atmosphere for over <strong>100 years</strong>, accumulating impacts on future generations.",
-      "why1Title":"Global Warming","why1p":"Earth's temperature has risen by 1.2°C since the pre-industrial era. If we exceed 2°C, the consequences will be severe and irreversible.",
-      "why2Title":"Melting Ice","why2p":"Antarctica has lost over 3 trillion tons of ice since the 1990s, visibly raising sea levels every year.",
-      "why3Title":"Food Security","why3p":"Changing rainfall patterns and drought threaten crops. Scientists estimate a 25% drop in food production by 2050 if degradation continues.",
-      "why4Title":"Economic Losses","why4p":"Climate disasters cost the world over $300 billion annually. Acting now is 5x cheaper than dealing with the consequences later.",
-      "eyebrow3":"Sources","text5":"Major Sources of Carbon Emissions",
-      "li1Title":"Electricity & Energy Generation","li1p":"Coal and natural gas plants generate more than a third of global emissions. Switching to solar and wind is the fastest solution.",
-      "li2Title":"Transportation","li2p":"Cars, planes, and ships consume billions of liters of fossil fuel daily. An electric car alone reduces your footprint by 50%.",
-      "li3Title":"Industry & Manufacturing","li3p":"Producing steel, cement, and chemicals requires burning massive amounts of fuel. Industry accounts for a sixth of global emissions.",
-      "li4Title":"Agriculture & Livestock","li4p":"Livestock produce methane, which is 80x more potent than CO₂. Reducing red meat is one of the most powerful individual changes.",
-      "li5Title":"Construction","li5p":"Buildings account for 40% of global energy consumption through heating, cooling, and lighting. Good insulation cuts both bills and footprint.",
-      "eyebrow4":"Effects","text11":"Impact of Carbon Footprint on the Environment",
-      "eff1Title":"Extreme Heat Waves","eff1p":"Earth has recorded its highest temperatures in recent years. Heat waves that once occurred every 50 years now occur every 10.","eff1sev":"Very High Impact ⚠️",
-      "eff2Title":"Rising Sea Levels","eff2p":"Average sea levels have risen over 20cm since 1900. Projections suggest an additional 0.3–1 meter rise by 2100, threatening coastal cities.","eff2sev":"Long-term Danger 🌊",
-      "eff3Title":"Drought & Water Scarcity","eff3p":"Over 2 billion people face water scarcity. Climate change intensifies this crisis by altering rainfall patterns.","eff3sev":"Growing Crisis 📈",
-      "eff4Title":"Air Pollution & Health","eff4p":"Air pollution causes 7 million deaths annually worldwide. Fine particles penetrate lungs causing heart disease, cancer, and asthma.","eff4sev":"7 Million Deaths/Year 💔",
-      "eyebrow5":"Solutions","text20":"How Can You Reduce Your Carbon Footprint?",
-      "red1Title":"Green Transport","red1p":"Use public transport, cycle, or walk. Every km cycled instead of driven saves 150g CO₂.","red1imp":"↓ 2.4 tons/year",
-      "red2Title":"Energy Efficiency","red2p":"Switch to LED bulbs and energy-efficient appliances. An LED bulb uses 90% less energy than a standard one.","red2imp":"↓ 1.5 tons/year",
-      "red3Title":"Plant-Based Diet","red3p":"Cutting red meat one day a week saves 340 kg CO₂ annually. A fully plant-based diet cuts food footprint by 73%.","red3imp":"↓ 0.7 tons/year",
-      "red4Title":"Renewable Energy","red4p":"Solar panels eliminate 80% of electricity bills and produce clean energy for 25 years.","red4imp":"↓ 1.8 tons/year",
-      "red5Title":"Recycling","red5p":"Recycling aluminum saves 95% of the energy needed. Sorting waste cuts footprint noticeably.","red5imp":"↓ 0.5 tons/year",
-      "red6Title":"Tree Planting","red6p":"One tree absorbs 22 kg CO₂ annually. Planting ten trees roughly offsets an eco-conscious person's footprint.","red6imp":"↓ 0.22 tons/tree",
-      "eyebrow6":"Data","chartTitle":"Carbon Footprint in Iraq",
-      "text26":"⚠️ Important Notice: These figures are approximate estimates based on energy, transport, and industrial patterns. They do not represent officially approved data from international bodies.",
-      "ctaTitle":"Ready to Know Your Footprint? 🌿","ctaPara":"Calculate your personal carbon footprint in two minutes and get a personalized AI report.","text27":"Calculate for Free Now ←"
-    },
-    "cal":{
-      "bannerTitle":"🌿 Calculate Your Carbon Footprint","header1":"Enter your data (all fields are optional)",
-      "secFuel":"⛽ Fuel & Transport","secHome":"🏠 Home & Energy","secFood":"🥦 Food & Shopping","secEmail":"📧 Receive Your Results",
-      "emailLabel":"📧 Email address <span style='color:#059669;font-size:0.8rem'>(to receive results and weekly reminder)</span>",
-      "emailNote":"✅ You'll receive an email with results immediately + a reminder in a week to re-measure",
-      "header2":"Gasoline (liters/month)","header3":"Diesel (liters/month)","header4":"Distance (km/month)",
-      "header5":"Electricity (kWh/month)","header6":"Gas cylinders (per month)","header7":"Water (liters/month)",
-      "header8":"Waste (kg/week)","header9":"Diet type","header10":"Choose...","header11":"Vegan","header12":"Moderate","header13":"High-meat",
-      "header14":"Flights per year","header15":"Monthly spending (USD)","header16":"Calculate Now",
-      "tipsTitle":"💡 Quick Tips to Reduce Your Footprint",
-      "tips":["🚌 Public transport","💡 Turn off lights","🚴 Ride a bike","🌱 Eat less meat","♻️ Recycle","☀️ Solar energy","🛁 Save water","🛒 Shop wisely"]
-    },
-    "tooltips":{
-      "gasoline":"Gasoline is used in most passenger cars and motorcycles. Enter your estimated monthly consumption in liters.",
-      "diesel":"Diesel is used in generators, heavy trucks, buses, and some cars. It produces more CO₂ per liter than gasoline.",
-      "distance":"Total distance driven monthly by car (any fuel type). Even short daily trips add up significantly.",
-      "electricity":"Check your electricity bill for the kWh figure. Electricity is one of the biggest sources of household emissions.",
-      "gas":"Cooking or heating gas cylinders used per month. Each standard cylinder (~12 kg) releases ~36 kg CO₂.",
-      "water":"Your household water consumption in liters per month. Water treatment and pumping consumes significant energy.",
-      "waste":"Average weight of trash you produce per week in kg. Landfill waste decomposes and releases methane gas.",
-      "diet":"Your general diet type. Meat-heavy diets produce significantly more greenhouse gases than plant-based ones.",
-      "flights":"Total number of flights (one-way) per year. A single flight can add hundreds of kg of CO₂.",
-      "shopping":"Average monthly spending on goods in USD. Production and shipping of goods generates emissions.",
-      "people":"Total number of employees, students, or residents in your community.",
-      "electricityC":"Total electricity consumption of the entire community (kWh/month).",
-      "gasolineC":"Total gasoline used by community vehicles per month in liters.",
-      "dieselC":"Diesel used by generators, trucks, or heavy equipment in the community per month.",
-      "wasteC":"Total solid waste generated by the community per month in kg.",
-      "waterC":"Total water consumption by the community per month in liters.",
-      "flightsC":"Total number of flights taken by community members or for business per year."
-    },
-    "comm":{
-      "bannerTitle":"🏘️ Community Carbon Footprint Calculator","header1":"Calculate the carbon footprint of your community, company, or institution",
-      "badge1":"🏢 Companies","badge2":"🎓 Universities","badge3":"🏙️ Cities",
-      "secType":"🏙️ Community Type","header2":"Choose your community type",
-      "header3":"Choose...","header4":"Company","header5":"College / University","header6":"Town / City",
-      "typeCompany":"Company","typeCollege":"College / University","typeTown":"Town / City",
-      "secPeople":"👥 Number of People","header7":"👥 Number of Employees / Students / Residents",
-      "secEnergy":"⚡ Energy & Fuel Consumption",
-      "header8":"⚡ Electricity (kWh/month)","header9":"⛽ Gasoline (liters/month)","header10":"🛢️ Diesel (liters/month)","header13":"✈️ Annual Flights",
-      "secWaste":"🗑️ Waste & Water","header11":"🚛 Community Waste (kg/month)","header12":"💧 Water (liters/month)",
-      "header14":"Calculate Community Footprint",
-      "info1Val":"Industry","info1Lab":"Largest source of community emissions","info2Lab":"Absorbed by one tree in 20 years","info3Lab":"Global target by 2050"
-    }
-  },
-  "ar": {
-    "dir":"rtl","langButton":"English",
-    "nav":{"home":"الرئيسية","about":"التفاصيل","calc":"المقياس","contact":"مقياس المجتمع","logo":"<img class='logo-img' src='/Images/IMG_7912.webp' alt='Logo'/> البصمة الكاربونية"},
-    "hero":{"title":"البصمة الكاربونية","paragraph":"تعرف على مقدار تأثيرك على البيئة من خلال أداة دقيقة وسهلة الاستخدام لحساب البصمة الكربونية. ابدأ في تقليل استهلاكك للطاقة وانبعاثاتك اليومية نحو أسلوب حياة أكثر استدامة.","under":"افهم مبادئ البصمة الكاربونية","indvBut":"حساب البصمة الفردية","commBut":"حساب بصمة المجتمع","scrollHint":"اكتشف أكثر"},
-    "cta":{"title":"ابدأ رحلتك الآن 🌍","para":"احسب بصمتك الكربونية مجاناً واحصل على نتائجك على بريدك الإلكتروني","btn":"🌿 احسب الآن"},
-    "cards":{"first":{"h":"ما هي البصمة الكاربونية؟","p":"يقيس البصمة الكربونية إجمالي انبعاثات الغازات الدفيئة التي تسببها بشكل مباشر وغير مباشر فرد أو منظمة أو منتج."},"second":{"h":"لماذا هذا مهم؟","p":"إن تقليل انبعاثات الكربون أمر بالغ الأهمية لمكافحة تغير المناخ والحفاظ على كوكبنا للأجيال القادمة."},"third":{"h":"اتخذ إجراءً","p":"يمكن أن تحدث التغييرات الصغيرة في الحياة اليومية فرقًا كبيرًا في تقليل تأثيرك البيئي وإلهام الآخرين."}},
-    "art":{"header":"قلّل بصمتك الكاربونية","firstHeader":"استعمل النقل العام","secondHeader":"لا تسرف بالطاقة","thirdHeader":"الأكل باعتدال","fourthHeader":"التسوق باعتدال","fifthHeader":"التوعية","Firstp":"خفض الانبعاثات بمقدار 4.6 طن متري سنويًا للشخص الواحد","Secondp":"التبديل إلى مصابيح LED وفصل الأجهزة عند عدم استخدامها","Thirdp":"تقليل انبعاثات الغذاء بنسبة تصل إلى 73%","Fourthp":"اختر المنتجات الصديقة للبيئة وقلل من الاستهلاك","fifthp":"حساب بصمتك الكربونية يساعدك على توعية الآخرين بتأثير أفعالنا اليومية على البيئة"},
-    "footer":{"header":"معاً لمستقبل أكثر خضرة","p":"كل فعل له قيمته. ابدأ رحلتك نحو نمط حياة مستدام اليوم.","first":"أطنان من ثاني أكسيد الكربون سنويًا","second":"الهدف المحدد","third":"أهداف المناخ"},
-    "about":{
-      "heroTag":"🌿 دليل البصمة الكاربونية","text1":"ما هي البصمة الكربونية؟","text2":"كل شيء تفعله يُنتج كمية من CO₂ — اكتشف ما هذا يعني وكيف يؤثر على مستقبل كوكبنا",
-      "eyebrow1":"التعريف","headerDef":"فهم البصمة الكربونية",
-      "text2Full":"البصمة الكربونية هي إجمالي كمية غازات الاحتباس الحراري التي ينتجها الإنسان من أنشطته اليومية. تشمل ثاني أكسيد الكربون (CO₂) والميثان (CH₄) وأكسيد النيتروز (N₂O) وغازات أخرى، وتُقاس بوحدة 'طن مكافئ CO₂'.",
-      "text2Types":"تنقسم إلى نوعين: <strong style='color:#059669'>المباشرة</strong> — كعوادم السيارة وحرق الوقود في المنزل، و<strong style='color:#059669'>غير المباشرة</strong> — كالطاقة المستخدمة لإنتاج ما نشتريه من سلع وخدمات.",
-      "defQuote":"'البصمة الكربونية هي المرآة التي تعكس تأثيرنا على الكوكب. قياسها هو الخطوة الأولى نحو تقليلها.'",
-      "statAvg":"متوسط الفرد عالمياً","statGoal":"الهدف المناخي للفرد","statTop":"أعلى دولة (قطر)",
-      "statLabel1":"طن CO₂ سنوياً من البشر","statLabel2":"ارتفاع حرارة الأرض منذ 1880","statLabel3":"تركيز CO₂ في الغلاف الجوي","statLabel4":"هدف الحياد الكربوني العالمي",
-      "eyebrow2":"الأهمية","text3":"لماذا تُعد البصمة الكربونية مهمة؟","text4":"ارتفاع مستويات ثاني أكسيد الكربون يُشكّل أحد أخطر التحديات التي يواجهها كوكب الأرض. كل طن إضافي من CO₂ يبقى في الغلاف الجوي لأكثر من <strong>100 سنة</strong>، مُتراكماً التأثيرات على الأجيال القادمة.",
-      "why1Title":"الاحترار العالمي","why1p":"ارتفعت حرارة الأرض بمقدار 1.2 درجة مئوية منذ عصر ما قبل الصناعة. إذا تجاوزنا 2 درجة، ستكون العواقب وخيمة وغير قابلة للعكس.",
-      "why2Title":"ذوبان الجليد","why2p":"فقدت القارة القطبية الجنوبية أكثر من 3 تريليون طن من الجليد منذ التسعينيات، مما يرفع مستوى البحار بشكل ملموس كل عام.",
-      "why3Title":"الأمن الغذائي","why3p":"تغير الأنماط المطرية والجفاف يُهددان المحاصيل الزراعية. يُقدّر العلماء انخفاض الإنتاج الغذائي بنسبة 25% بحلول 2050 إذا استمر التدهور.",
-      "why4Title":"الخسائر الاقتصادية","why4p":"تُكلّف الكوارث المناخية العالم أكثر من 300 مليار دولار سنوياً. التصرف الآن أرخص بـ 5 أضعاف من التعامل مع تداعيات التغير المناخي لاحقاً.",
-      "eyebrow3":"المصادر","text5":"أهم مصادر الانبعاثات الكاربونية",
-      "li1Title":"توليد الكهرباء والطاقة","li1p":"محطات الفحم والغاز الطبيعي تولّد أكثر من ثلث انبعاثات العالم. التحول للطاقة الشمسية والرياح هو الحل الأسرع تأثيراً.",
-      "li2Title":"النقل والمواصلات","li2p":"السيارات والطائرات والسفن تستهلك مليارات اللترات من الوقود الأحفوري يومياً. السيارة الكهربائية وحدها تقلل بصمتك بنسبة 50%.",
-      "li3Title":"الصناعة والتصنيع","li3p":"إنتاج الحديد والإسمنت والمواد الكيميائية يتطلب حرق كميات هائلة من الوقود. الصناعة مسؤولة عن سُدس الانبعاثات العالمية.",
-      "li4Title":"الزراعة وتربية الحيوانات","li4p":"الماشية تُنتج الميثان، وهو غاز أشد تأثيراً من CO₂ بـ 80 مرة. تقليل استهلاك اللحوم الحمراء هو من أقوى التغييرات الفردية.",
-      "li5Title":"البناء والتشييد","li5p":"المباني مسؤولة عن 40% من استهلاك الطاقة عالمياً عبر التدفئة والتبريد والإضاءة. العزل الجيد يخفض الفاتورة والبصمة معاً.",
-      "eyebrow4":"التأثيرات","text11":"تأثير البصمة الكاربونية على البيئة",
-      "eff1Title":"موجات الحر الشديدة","eff1p":"سجّلت الأرض أعلى درجات حرارة في التاريخ المسجّل خلال السنوات الأخيرة. موجات الحر التي كانت تحدث مرة كل 50 سنة باتت تحدث كل 10 سنوات.","eff1sev":"تأثير عالٍ جداً ⚠️",
-      "eff2Title":"ارتفاع مستوى البحار","eff2p":"ارتفع متوسط مستوى البحار بأكثر من 20 سم منذ 1900. التوقعات تشير إلى ارتفاع إضافي يتراوح بين 0.3 و1 متر بحلول 2100.","eff2sev":"خطر طويل الأمد 🌊",
-      "eff3Title":"الجفاف وشح المياه","eff3p":"يعاني أكثر من 2 مليار شخص من شح المياه. التغير المناخي يُضاعف هذه الأزمة عبر تغيير أنماط الأمطار.","eff3sev":"أزمة متصاعدة 📈",
-      "eff4Title":"تلوث الهواء والصحة","eff4p":"يتسبب تلوث الهواء في وفاة 7 مليون شخص سنوياً حول العالم. الجسيمات الدقيقة تخترق الرئتين وتُسبب أمراض القلب والسرطان والربو.","eff4sev":"7 مليون وفاة/سنة 💔",
-      "eyebrow5":"الحلول","text20":"كيف تقلل بصمتك الكربونية؟",
-      "red1Title":"النقل الأخضر","red1p":"استخدم المواصلات العامة أو الدراجة أو المشي. كل كيلومتر على الدراجة بدل السيارة يوفر 150 غرام CO₂.","red1imp":"↓ 2.4 طن/سنة",
-      "red2Title":"كفاءة الطاقة","red2p":"استبدل المصابيح بـ LED وأجهزة الطاقة العالية بموفّرة للطاقة. المصباح LED يوفر 90% من استهلاك المصباح العادي.","red2imp":"↓ 1.5 طن/سنة",
-      "red3Title":"نظام غذائي نباتي","red3p":"تقليل اللحوم الحمراء يوم واحد في الأسبوع يوفر 340 كغم CO₂ سنوياً. النظام النباتي الكامل يخفض البصمة الغذائية بنسبة 73%.","red3imp":"↓ 0.7 طن/سنة",
-      "red4Title":"الطاقة المتجددة","red4p":"الألواح الشمسية على المنزل تُلغي 80% من فاتورة الكهرباء وتُنتج طاقة نظيفة لـ 25 سنة.","red4imp":"↓ 1.8 طن/سنة",
-      "red5Title":"إعادة التدوير","red5p":"إعادة تدوير الألومنيوم توفر 95% من طاقة الإنتاج الجديد. فرز النفايات وتقليل الهدر الغذائي يُقلصان البصمة.","red5imp":"↓ 0.5 طن/سنة",
-      "red6Title":"زراعة الأشجار","red6p":"شجرة واحدة تمتص 22 كغم CO₂ سنوياً. زراعة عشر أشجار يعوّض تقريباً بصمة شخص واعٍ بيئياً.","red6imp":"↓ 0.22 طن/شجرة",
-      "eyebrow6":"البيانات","chartTitle":"البصمة الكربونية في العراق",
-      "text26":"⚠️ تنبيه مهم: هذه الأرقام تقديرات تقريبية بناءً على أنماط استهلاك الطاقة والنقل والصناعة. لا تمثل بيانات رسمية معتمدة من هيئات دولية.",
-      "ctaTitle":"جاهز لمعرفة بصمتك؟ 🌿","ctaPara":"احسب بصمتك الكربونية الشخصية في دقيقتين واحصل على تقرير مخصص بالذكاء الاصطناعي","text27":"احسب الآن مجاناً ←"
-    },
-    "cal":{
-      "bannerTitle":"🌿 احسب بصمتك الكاربونية","header1":"أدخل بياناتك (كل الحقول اختيارية)",
-      "secFuel":"⛽ الوقود والتنقل","secHome":"🏠 المنزل والطاقة","secFood":"🥦 الغذاء والتسوق","secEmail":"📧 استلام نتائجك",
-      "emailLabel":"📧 البريد الإلكتروني <span style='color:#059669;font-size:0.8rem'>(لاستلام نتائجك وتذكير أسبوعي)</span>",
-      "emailNote":"✅ سيصلك إيميل بالنتائج فوراً + تذكير بعد أسبوع لإعادة القياس",
-      "header2":"⛽ استهلاك البنزين (لتر/شهر)","header3":"🛢️ استهلاك الديزل (لتر/شهر)","header4":"🚗 المسافة المقطوعة (كم/شهر)",
-      "header5":"⚡ استهلاك الكهرباء (ك.و.س/شهر)","header6":"🔥 عدد أسطوانات الغاز (شهريًا)","header7":"💧 استهلاك المياه (لتر/شهر)",
-      "header8":"🗑️ وزن النفايات (كغم/أسبوع)","header9":"🥦 نمط الغذاء","header10":"اختر...","header11":"نباتي","header12":"متوسط","header13":"غني باللحوم",
-      "header14":"✈️ عدد الرحلات الجوية بالسنة","header15":"🛍️ الإنفاق الشهري (دولار)","header16":"احسب الآن",
-      "tipsTitle":"💡 نصائح سريعة لتقليل بصمتك",
-      "tips":["🚌 استخدم النقل العام","💡 أطفئ الأضواء","🚴 اركب الدراجة","🌱 قلّل اللحوم","♻️ أعد التدوير","☀️ الطاقة الشمسية","🛁 قلّل استهلاك الماء","🛒 تسوق بوعي"]
-    },
-    "tooltips":{
-      "gasoline":"البنزين يُستخدم في معظم سيارات الركاب والدراجات النارية. أدخل تقديرك للاستهلاك الشهري بالليتر.",
-      "diesel":"الديزل يُستخدم في المولدات الكهربائية والشاحنات الثقيلة والحافلات وبعض السيارات. يُنتج انبعاثات أعلى من البنزين لكل لتر.",
-      "distance":"إجمالي المسافة التي تقطعها شهرياً بالسيارة. حتى الرحلات القصيرة اليومية تتراكم بشكل كبير.",
-      "electricity":"راجع فاتورة الكهرباء لمعرفة قيمة ك.و.س. الكهرباء من أكبر مصادر الانبعاثات المنزلية.",
-      "gas":"أسطوانات الغاز المستخدمة للطهي أو التدفئة شهرياً. كل أسطوانة قياسية (~12 كغم) تُطلق نحو 36 كغم CO₂.",
-      "water":"استهلاك مياهك المنزلية بالليتر شهرياً. معالجة المياه وضخها يستهلك طاقة كبيرة.",
-      "waste":"متوسط وزن القمامة التي تنتجها أسبوعياً بالكغم. النفايات في المكبّات تتحلل وتُطلق غاز الميثان.",
-      "diet":"نوع غذائك العام. الأنظمة الغنية باللحوم تُنتج انبعاثات دفيئة أعلى بكثير من الأنظمة النباتية.",
-      "flights":"إجمالي عدد الرحلات الجوية (ذهاباً) في السنة. رحلة واحدة قد تُضيف مئات الكغم من CO₂.",
-      "shopping":"متوسط إنفاقك الشهري على السلع والخدمات بالدولار. إنتاج البضائع وشحنها يُولّد انبعاثات كبيرة.",
-      "people":"إجمالي عدد الموظفين أو الطلاب أو السكان في مجتمعك.",
-      "electricityC":"إجمالي استهلاك الكهرباء للمجتمع بالكامل (ك.و.س شهرياً).",
-      "gasolineC":"إجمالي استهلاك البنزين لمركبات المجتمع شهرياً بالليتر.",
-      "dieselC":"الديزل المستخدم في المولدات أو الشاحنات أو المعدات الثقيلة للمجتمع شهرياً.",
-      "wasteC":"إجمالي النفايات الصلبة التي يُنتجها المجتمع شهرياً بالكغم.",
-      "waterC":"إجمالي استهلاك المياه للمجتمع شهرياً بالليتر.",
-      "flightsC":"إجمالي عدد الرحلات الجوية التي يقوم بها أفراد المجتمع أو لأغراض العمل سنوياً."
-    },
-    "comm":{
-      "bannerTitle":"🏘️ مقياس البصمة المجتمعية","header1":"احسب البصمة الكربونية لمجتمعك أو شركتك أو مؤسستك",
-      "badge1":"🏢 شركات","badge2":"🎓 جامعات","badge3":"🏙️ مدن",
-      "secType":"🏙️ نوع المجتمع","header2":"اختر نوع مجتمعك",
-      "header3":"اختر...","header4":"شركة","header5":"كلية / جامعة","header6":"مدينة / بلدة",
-      "typeCompany":"شركة","typeCollege":"كلية / جامعة","typeTown":"مدينة / بلدة",
-      "secPeople":"👥 عدد الأفراد","header7":"👥 عدد الأفراد / الموظفين / السكان",
-      "secEnergy":"⚡ استهلاك الطاقة والوقود",
-      "header8":"⚡ استهلاك الكهرباء (ك.و.س/شهر)","header9":"⛽ البنزين (لتر/شهر)","header10":"🛢️ الديزل (لتر/شهر)","header13":"✈️ الرحلات الجوية (سنوياً)",
-      "secWaste":"🗑️ النفايات والمياه","header11":"🚛 نفايات المجتمع (كغم/شهر)","header12":"💧 استهلاك الماء (لتر/شهر)",
-      "header14":"احسب البصمة المجتمعية",
-      "info1Val":"الصناعة","info1Lab":"أكبر مصدر للانبعاثات المجتمعية","info2Lab":"تمتصه شجرة واحدة في 20 سنة","info3Lab":"الهدف العالمي بحلول 2050"
-    }
+let TRANSLATIONS = {};
+
+async function loadTranslations() {
+  try {
+    const res = await fetch('/lang.json');
+    if (!res.ok) throw new Error('Failed to load lang.json');
+    TRANSLATIONS = await res.json();
+  } catch (e) {
+    console.error('Could not load lang.json:', e);
   }
-};
+}
+
 
 // ================================================================
 //  BACKEND HELPERS
@@ -577,8 +360,14 @@ document.querySelectorAll('.engbut').forEach(btn => btn.addEventListener('click'
   loadLanguage(currentLang);
 }));
 
-loadLanguage(currentLang);
-buildAllTooltips();
+// ================================================================
+//  INIT — load translations from lang.json then apply language
+// ================================================================
+(async function init() {
+  await loadTranslations();
+  loadLanguage(currentLang);
+  buildAllTooltips();
+})();
 
 // ================================================================
 //  🌿 INDIVIDUAL CALCULATOR
