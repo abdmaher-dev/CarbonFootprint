@@ -103,7 +103,7 @@ app.post('/save-email', async (req, res) => {
             console.log('📧 Reminder sent (1 min after signup):', freshUser.email);
           }
         }
-      }, 1 * 60 * 1000);
+      },7 * 24 * 60 * 60 * 1000);
     }
 
     res.sendStatus(200);
@@ -157,18 +157,18 @@ app.post('/analyze', async (req, res) => {
     const response = await axios.post(
       'https://api.anthropic.com/v1/messages',
       {
-        model: 'claude-3-5-sonnet-latest',
+        model: 'claude-sonnet-4-5',
         max_tokens: 600,
         messages: [{ role: 'user', content: prompt }]
       },
       {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': process.env.ANTHROPIC_API_KEY,
-          'anthropic-version': '2023-06-01'
-        },
-        timeout: 15000 // 15 seconds timeout
-      }
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': process.env.ANTHROPIC_API_KEY,
+    'anthropic-version': '2023-06-01'
+  },
+  timeout: 15000  // ← هنا صح من ناحية المكان
+}
     );
 
     const text = response.data.content[0]?.text || '';
@@ -213,8 +213,8 @@ async function checkReminders() {
   const users = await User.find({ week1Sent: false });
   const now = new Date();
   for (const user of users) {
-    const diffMinutes = (now - user.createdAt) / (1000 * 60);
-    if (diffMinutes >= 1) {
+    const diffDays = (now - user.createdAt) / (1000 * 60 * 60 * 24);
+    if (diffDays >= 7) {
       const success = await sendReminderEmail(user.email);
       if (success) {
         user.week1Sent = true;
@@ -226,7 +226,8 @@ async function checkReminders() {
 }
 
 /* ================= Auto Scheduler ================= */
-setInterval(checkReminders, 30 * 1000);
+setInterval(checkReminders, 6 * 60 * 60 * 1000);
+checkReminders();
 
 /* ================= Trigger Route ================= */
 app.get('/check-reminders', async (req, res) => {
