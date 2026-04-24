@@ -554,14 +554,7 @@ img { max-width: 100%; height: auto; display: block; }
   background: white;
 }
 
-.form-label {
-  display: block;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 0.4rem;
-  font-family: "Parastoo", serif;
-}
+
 
 .form-input {
   width: 100%;
@@ -956,6 +949,7 @@ select.form-input { cursor: pointer; }
   transition: background 0.2s, color 0.2s;
   font-family: Arial, sans-serif;
   padding: 0;
+
 }
 
 .tt-btn:hover,
@@ -1546,7 +1540,8 @@ body.cal-page {
 }
 
 .form-label {
-  display: block;
+  display: flex;
+  justify-content: space-between;
   font-size: 0.85rem;
   font-weight: 600;
   color: #374151;

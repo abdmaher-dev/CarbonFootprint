@@ -36,6 +36,7 @@ window.addEventListener('load', triggerReminderCheck);
 // ================================================================
 //  AI ANALYSIS
 // ================================================================
+
 async function analyzeWithAI(inputs, result) {
   try {
     const r = await fetch(`${BACKEND_URL}/analyze`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({inputs,result})});
@@ -71,6 +72,7 @@ if(menuBtn) menuBtn.addEventListener('click', () => {
   navLinksEl?.classList.toggle('open');
   menuBtn.classList.toggle('open');
 });
+
 if(overlay) overlay.addEventListener('click', () => {
   sideMenu?.classList.remove('open');
   overlay.classList.add('hidden');

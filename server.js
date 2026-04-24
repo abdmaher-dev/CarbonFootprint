@@ -100,7 +100,7 @@ app.post('/save-email', async (req, res) => {
           if (success) {
             freshUser.week1Sent = true;
             await freshUser.save();
-            console.log('📧 Reminder sent (1 min after signup):', freshUser.email);
+            console.log('📧 Reminder sent (7 days after signup):', freshUser.email);
           }
         }
       },7 * 24 * 60 * 60 * 1000);
