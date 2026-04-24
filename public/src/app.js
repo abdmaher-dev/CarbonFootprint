@@ -394,23 +394,25 @@ async function calculateCarbon() {
     inputs.waste*4*EF.waste + (inputs.diet*1000)/12 +
     (inputs.flights*EF.flights)/12 + inputs.shopping*EF.shopping;
 
-  const tonsPerYear = (total*12)/1000;
   let color="", level="", advice="";
   const ar = currentLang==="ar";
 
-  if(ar){
-    if(total<170)       {color="🟢";level="منخفضة جداً"; advice="أحسنت! بصمتك الكربونية منخفضة جدًا، واعٍ بيئياً بامتياز!";}
-    else if(total<420)  {color="🟡";level="جيدة";         advice="بصمتك جيدة، بعض التحسينات الصغيرة تجعلها ممتازة.";}
-    else if(total<830)  {color="🟠";level="متوسطة";       advice="بصمتك متوسطة، الذكاء الاصطناعي سيحدد لك أكبر الفرص.";}
-    else if(total<1670) {color="🔴";level="مرتفعة";       advice="بصمتك مرتفعة، التحليل الذكي سيُرشدك لتقليلها.";}
-    else                {color="⚫";level="عالية جداً";   advice="بصمتك عالية جداً، اقرأ التحليل المفصّل بعناية.";}
-  } else {
-    if(total<170)       {color="🟢";level="Very Low";  advice="Excellent! Your carbon footprint is very low!";}
-    else if(total<420)  {color="🟡";level="Good";      advice="Good footprint. Small improvements will make it great.";}
-    else if(total<830)  {color="🟠";level="Average";   advice="Average footprint. AI will identify your biggest opportunities.";}
-    else if(total<1670) {color="🔴";level="High";      advice="High footprint. Smart analysis will guide your reduction.";}
-    else                {color="⚫";level="Very High";  advice="Very high footprint. Read the detailed AI analysis carefully.";}
-  }
+ const tonsPerYear = (total*12)/1000;
+const yearlyKg = total * 12;
+
+if(ar){
+    if(yearlyKg < 2000)       {color="🟢"; level="منخفضة جداً"; advice="أحسنت! بصمتك منخفضة جداً.";}
+    else if(yearlyKg < 4500)  {color="🟡"; level="طبيعية";       advice="ضمن المعدل الطبيعي في العراق.";}
+    else if(yearlyKg < 9000)  {color="🟠"; level="متوسطة";       advice="يمكنك تقليل استهلاكك.";}
+    else if(yearlyKg < 15000) {color="🔴"; level="مرتفعة";       advice="استهلاكك عالي.";}
+    else                      {color="⚫"; level="عالية جداً";   advice="تحتاج تغيير جذري.";}
+} else {
+    if(yearlyKg < 2000)       {color="🟢"; level="Very Low";  advice="Excellent!";}
+    else if(yearlyKg < 4500)  {color="🟡"; level="Normal";    advice="Within average.";}
+    else if(yearlyKg < 9000)  {color="🟠"; level="Average";   advice="Can improve.";}
+    else if(yearlyKg < 15000) {color="🔴"; level="High";      advice="High consumption.";}
+    else                      {color="⚫"; level="Very High"; advice="Major changes needed.";}
+}
 
   const resultData = {monthly:total, yearly:tonsPerYear, color, level, advice};
   const resultEl = document.getElementById("result");
@@ -476,21 +478,46 @@ function calculateCommunity() {
   let color="", advice="";
   const ar = currentLang==="ar";
 
-  if(total<=0||people<=0){
-    color="⚫"; advice=ar?"أدخل قيماً صحيحة.":"Please enter valid values.";
-  } else if(ar){
-    if(total<170*people)       {color="🟢";advice="بصمة المجتمع منخفضة جداً! نموذج يُحتذى به.";}
-    else if(total<420*people)  {color="🟡";advice="بصمة جيدة، تحسينات بسيطة تُفرق كثيراً.";}
-    else if(total<830*people)  {color="🟠";advice="متوسطة، حسّن كفاءة الطاقة والنقل الجماعي.";}
-    else if(total<1670*people) {color="🔴";advice="مرتفعة، ضع خطة لتقليل الانبعاثات تدريجياً.";}
-    else                       {color="⚫";advice="عالية جداً، يجب اتخاذ خطوات استراتيجية فورية.";}
-  } else {
-    if(total<170*people)       {color="🟢";advice="Very low community footprint! A model to follow.";}
-    else if(total<420*people)  {color="🟡";advice="Good footprint; small improvements make a big difference.";}
-    else if(total<830*people)  {color="🟠";advice="Average; improve energy efficiency and collective transport.";}
-    else if(total<1670*people) {color="🔴";advice="High; create a gradual reduction plan.";}
-    else                       {color="⚫";advice="Very high; immediate strategic steps needed.";}
-  }
+  const yearlyKg = total * 12;
+  const perPersonYearly = people > 0 ? yearlyKg / people : 0;
+
+ if(total<=0||people<=0){
+  color="⚫"; 
+  advice=ar?"أدخل قيماً صحيحة.":"Please enter valid values.";
+} else if(ar){
+
+  if(perPersonYearly < 2000)
+    {color="🟢"; advice="بصمة الفرد في هذا المجتمع منخفضة جداً! أداء ممتاز.";}
+
+  else if(perPersonYearly < 4500)
+    {color="🟡"; advice="بصمة المجتمع ضمن المعدل الطبيعي في العراق.";}
+
+  else if(perPersonYearly < 9000)
+    {color="🟠"; advice="بصمة متوسطة، يمكن تحسين كفاءة الطاقة والنقل.";}
+
+  else if(perPersonYearly < 15000)
+    {color="🔴"; advice="بصمة مرتفعة، الاستهلاك أعلى من المعدل.";}
+
+  else
+    {color="⚫"; advice="بصمة عالية جداً، يحتاج المجتمع خطة تقليل واضحة.";}
+
+} else {
+
+  if(perPersonYearly < 2000)
+    {color="🟢"; advice="Very low per-person footprint! Excellent.";}
+
+  else if(perPersonYearly < 4500)
+    {color="🟡"; advice="Within the normal Iraqi average.";}
+
+  else if(perPersonYearly < 9000)
+    {color="🟠"; advice="Average footprint. Improvements possible.";}
+
+  else if(perPersonYearly < 15000)
+    {color="🔴"; advice="High footprint per person.";}
+
+  else
+    {color="⚫"; advice="Very high footprint. Action needed.";}
+}
 
   const el = document.getElementById("communityResult");
   if(!el) return;
@@ -503,7 +530,7 @@ function calculateCommunity() {
           <p><strong>${tonsYear.toFixed(2)}</strong> طن CO₂e / سنة</p>
         </div>
       </div>
-      <p class="result-level-badge">${color}</p>
+      <p class="result-level-badge">${color} ${advice}</p>
       <div class="per-person-bar">
         <p>👤 متوسط نصيب الفرد: <strong>${perPerson} كغم CO₂e/شهر</strong></p>
         <p>📊 معامل المجتمع (${type||"غير محدد"}): <strong>${factor}</strong></p>
