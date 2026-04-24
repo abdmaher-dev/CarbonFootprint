@@ -615,7 +615,8 @@ body.cal-page {
 }
 
 .form-label {
-  display: block;
+  display: flex;
+  justify-content: space-between;
   position: relative;
   font-size: 0.85rem;
   font-weight: 600;
