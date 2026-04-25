@@ -116,42 +116,50 @@ app.post('/save-email', async (req, res) => {
 /* ================= 🤖 AI Analysis Route ================= */
 app.post('/analyze', async (req, res) => {
   try {
-    const { inputs, result } = req.body;
+    const { inputs, result, lang = 'ar' } = req.body;
     if (!inputs || !result) return res.status(400).json({ error: 'Missing data' });
 
-    // التحقق من وجود مفتاح API
     if (!process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY === '') {
       console.log('⚠️ No API key found, using local analysis fallback');
       const localAnalysis = generateLocalAnalysis(inputs, result);
       return res.json({ analysis: localAnalysis, source: 'local' });
     }
 
+    const isAr = lang === 'ar';
+    const langInstruction = isAr
+      ? 'اكتب بالعربية الفصيحة فقط.'
+      : 'Write in English only.';
+
     const prompt = `
-أنت خبير بيئي متخصص في تحليل البصمة الكربونية.
-بناءً على بيانات المستخدم التالية، اكتشف السبب الرئيسي لارتفاع البصمة وقدّم تحليلاً وتوصيات مخصصة.
+${isAr ? 'أنت خبير بيئي متخصص في تحليل البصمة الكربونية.' : 'You are an environmental expert specializing in carbon footprint analysis.'}
+${isAr ? 'بناءً على بيانات المستخدم التالية، اكتشف السبب الرئيسي لارتفاع البصمة وقدّم تحليلاً وتوصيات مخصصة.' : 'Based on the following user data, identify the main causes of high footprint and provide personalized analysis and recommendations.'}
 
-📊 بيانات المستخدم الشهرية:
-- بنزين: ${inputs.gasoline || 0} لتر/شهر → ${((inputs.gasoline || 0)*2.31).toFixed(0)} كغم CO₂
-- ديزل: ${inputs.diesel || 0} لتر/شهر → ${((inputs.diesel || 0)*2.68).toFixed(0)} كغم CO₂
-- مسافة بالسيارة: ${inputs.distance || 0} كم/شهر → ${((inputs.distance || 0)*0.19).toFixed(0)} كغم CO₂
-- كهرباء: ${inputs.electricity || 0} ك.و.س/شهر → ${((inputs.electricity || 0)*0.5).toFixed(0)} كغم CO₂
-- أسطوانات غاز: ${inputs.gas || 0}/شهر → ${((inputs.gas || 0)*36).toFixed(0)} كغم CO₂
-- مياه: ${inputs.water || 0} م³/شهر → ${((inputs.water || 0)*0.3).toFixed(0)} كغم CO₂
-- نفايات: ${inputs.waste || 0} كغم/أسبوع → ${((inputs.waste || 0)*4*1.9).toFixed(0)} كغم CO₂
-- نمط الغذاء: ${inputs.diet === 3.3 ? 'غني باللحوم' : inputs.diet === 2.5 ? 'متوسط' : inputs.diet === 1.7 ? 'نباتي' : 'غير محدد'}
-- رحلات جوية: ${inputs.flights || 0}/سنة
-- إنفاق شهري: ${inputs.shopping || 0} دولار
+📊 ${isAr ? 'بيانات المستخدم الشهرية' : 'Monthly user data'}:
+- ${isAr?'بنزين':'Gasoline'}: ${inputs.gasoline || 0} ${isAr?'لتر/شهر':'L/month'} → ${((inputs.gasoline || 0)*2.31).toFixed(0)} kg CO₂
+- ${isAr?'ديزل':'Diesel'}: ${inputs.diesel || 0} ${isAr?'لتر/شهر':'L/month'} → ${((inputs.diesel || 0)*2.68).toFixed(0)} kg CO₂
+- ${isAr?'مسافة بالسيارة':'Distance'}: ${inputs.distance || 0} ${isAr?'كم/شهر':'km/month'} → ${((inputs.distance || 0)*0.19).toFixed(0)} kg CO₂
+- ${isAr?'كهرباء':'Electricity'}: ${inputs.electricity || 0} ${isAr?'ك.و.س/شهر':'kWh/month'} → ${((inputs.electricity || 0)*0.5).toFixed(0)} kg CO₂
+- ${isAr?'أسطوانات غاز':'Gas cylinders'}: ${inputs.gas || 0}${isAr?'/شهر':'/month'} → ${((inputs.gas || 0)*36).toFixed(0)} kg CO₂
+- ${isAr?'مياه':'Water'}: ${inputs.water || 0} ${isAr?'م³/شهر':'L/month'} → ${((inputs.water || 0)*0.3).toFixed(0)} kg CO₂
+- ${isAr?'نفايات':'Waste'}: ${inputs.waste || 0} ${isAr?'كغم/أسبوع':'kg/week'} → ${((inputs.waste || 0)*4*1.9).toFixed(0)} kg CO₂
+- ${isAr?'نمط الغذاء':'Diet'}: ${inputs.diet === 3.3 ? (isAr?'غني باللحوم':'High-meat') : inputs.diet === 2.5 ? (isAr?'متوسط':'Moderate') : inputs.diet === 1.7 ? (isAr?'نباتي':'Vegan') : (isAr?'غير محدد':'Unspecified')}
+- ${isAr?'رحلات جوية':'Flights'}: ${inputs.flights || 0}${isAr?'/سنة':'/year'}
+- ${isAr?'إنفاق شهري':'Monthly spending'}: ${inputs.shopping || 0} USD
 
-📈 النتيجة الإجمالية: ${(result.monthly || 0).toFixed(1)} كغم CO₂e/شهر (${(result.yearly || 0).toFixed(2)} طن/سنة)
-المستوى: ${result.level || 'غير محدد'}
+📈 ${isAr?'النتيجة الإجمالية':'Total'}: ${(result.monthly || 0).toFixed(1)} kg CO₂e/${isAr?'شهر':'month'} (${(result.yearly || 0).toFixed(2)} ${isAr?'طن/سنة':'tons/year'})
+${isAr?'المستوى':'Level'}: ${result.level || (isAr?'غير محدد':'Unspecified')}
 
-الرجاء الكتابة بالعربية الفصيحة وتقديم:
+${langInstruction}
+${isAr ? `الرجاء تقديم:
 1. أكبر سببين لارتفاع البصمة (مقارنة بالمتوسط العالمي)
 2. ثلاث نصائح مخصصة وعملية بناءً على بياناته تحديداً
 3. الوفورات المتوقعة إذا اتّبع كل نصيحة (بالكغم أو الطن سنوياً)
-
-اكتب بأسلوب واضح وودّي، وأضف تشجيعاً إيجابياً في النهاية.
-لا تتجاوز 250 كلمة.
+اكتب بأسلوب واضح وودّي، وأضف تشجيعاً إيجابياً في النهاية. لا تتجاوز 250 كلمة.`
+: `Please provide:
+1. The top 2 causes of high footprint (compared to global average)
+2. Three personalized, actionable tips based on their specific data
+3. Expected savings if each tip is followed (in kg or tons/year)
+Write in a clear and friendly tone, with positive encouragement at the end. Max 250 words.`}
 `;
 
     const response = await axios.post(
@@ -183,55 +191,51 @@ app.post('/analyze', async (req, res) => {
   }
 });
 
-/* ================= 🤖 Community AI Analysis Route ================= */
+/* ================= Community AI Analysis Route ================= */
 app.post('/analyze-community', async (req, res) => {
   try {
     const { inputs, result } = req.body;
     if (!inputs || !result) return res.status(400).json({ error: 'Missing data' });
 
     if (!process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY === '') {
-      const localAnalysis = generateCommunityAnalysis(inputs, result);
+      const localAnalysis = generateLocalAnalysis(inputs, result);
       return res.json({ analysis: localAnalysis, source: 'local' });
     }
 
-    const typeLabel = {company:'شركة', college:'كلية/جامعة', town:'مدينة/بلدة'}[inputs.communityType] || 'غير محدد';
+    const typeLabels = { company: 'Company', college: 'College/University', town: 'City/Town' };
+    const typeLabel = typeLabels[inputs.communityType] || 'Unspecified';
+    const perPerson = inputs.people > 0 ? ((result.monthly || 0) / inputs.people).toFixed(1) : 0;
 
     const prompt = `
-أنت خبير بيئي متخصص في تحليل البصمة الكربونية للمؤسسات والمجتمعات.
-بناءً على بيانات المجتمع التالية، قدّم تحليلاً وتوصيات مخصصة.
+You are an environmental expert analyzing community carbon footprints.
+IMPORTANT: Write every point bilingually - Arabic first, then English translation immediately after.
 
-📊 بيانات المجتمع:
-- نوع المجتمع: ${typeLabel}
-- عدد الأفراد/الموظفين: ${inputs.people || 0}
-- كهرباء: ${inputs.electricity || 0} ك.و.س/شهر → ${((inputs.electricity||0)*0.5).toFixed(0)} كغم CO₂
-- بنزين: ${inputs.gasoline || 0} لتر/شهر → ${((inputs.gasoline||0)*2.31).toFixed(0)} كغم CO₂
-- ديزل: ${inputs.diesel || 0} لتر/شهر → ${((inputs.diesel||0)*2.68).toFixed(0)} كغم CO₂
-- نفايات: ${inputs.waste || 0} كغم/شهر → ${((inputs.waste||0)*1.9).toFixed(0)} كغم CO₂
-- مياه: ${inputs.water || 0} لتر/شهر
-- رحلات جوية: ${inputs.flights || 0} سنوياً → ${((inputs.flights||0)*115/12).toFixed(0)} كغم CO₂/شهر
+Community Data:
+- Type: ${typeLabel}
+- People: ${inputs.people || 0}
+- Electricity: ${inputs.electricity || 0} kWh/month -> ${((inputs.electricity || 0)*0.5).toFixed(0)} kg CO2
+- Gasoline: ${inputs.gasoline || 0} L/month -> ${((inputs.gasoline || 0)*2.31).toFixed(0)} kg CO2
+- Diesel: ${inputs.diesel || 0} L/month -> ${((inputs.diesel || 0)*2.68).toFixed(0)} kg CO2
+- Waste: ${inputs.waste || 0} kg/month -> ${((inputs.waste || 0)*1.9).toFixed(0)} kg CO2
+- Water: ${inputs.water || 0} L/month -> ${((inputs.water || 0)*0.0003).toFixed(1)} kg CO2
+- Flights: ${inputs.flights || 0}/year
 
-📈 الإجمالي: ${(result.monthly||0).toFixed(1)} كغم CO₂e/شهر (${(result.yearly||0).toFixed(2)} طن/سنة)
-📊 متوسط الفرد: ${inputs.people > 0 ? ((result.monthly||0)/inputs.people).toFixed(1) : 0} كغم CO₂e/شهر
-المستوى: ${result.level || 'غير محدد'}
+Total: ${(result.monthly || 0).toFixed(1)} kg CO2e/month (${(result.yearly || 0).toFixed(2)} tons/year)
+Per person: ${perPerson} kg CO2e/month
+Level: ${result.level || 'Unspecified'}
 
-اكتب بالعربية الفصيحة وقدّم:
-1. أكبر مصدرَين للانبعاثات في هذا المجتمع
-2. ثلاث توصيات عملية مناسبة لـ${typeLabel} تحديداً
-3. الوفورات المتوقعة من تطبيق كل توصية
-4. تشجيع إيجابي في النهاية
-
-لا تتجاوز 250 كلمة.
+Please provide a BILINGUAL response (Arabic sentence followed by English translation) covering:
+1. Top 2 causes of the high community footprint
+2. Three practical recommendations for this type of community
+3. Expected savings for each recommendation (kg or tons/year)
+Friendly professional tone, positive encouragement at end. Max 300 words total.
 `;
 
     const response = await axios.post(
       'https://api.anthropic.com/v1/messages',
-      { model: 'claude-sonnet-4-5', max_tokens: 600, messages: [{ role: 'user', content: prompt }] },
+      { model: 'claude-sonnet-4-5', max_tokens: 700, messages: [{ role: 'user', content: prompt }] },
       {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': process.env.ANTHROPIC_API_KEY,
-          'anthropic-version': '2023-06-01'
-        },
+        headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
         timeout: 15000
       }
     );
@@ -240,58 +244,14 @@ app.post('/analyze-community', async (req, res) => {
     res.json({ analysis: text, source: 'ai' });
 
   } catch (err) {
-    console.error('❌ Community AI error:', err.response?.data || err.message);
+    console.error('Community AI error:', err.response?.data || err.message);
     const { inputs, result } = req.body;
-    const localAnalysis = generateCommunityAnalysis(inputs, result);
+    const localAnalysis = generateLocalAnalysis(inputs, result);
     res.json({ analysis: localAnalysis, source: 'local-fallback' });
   }
 });
 
-function generateCommunityAnalysis(inputs, result) {
-  const monthly = result.monthly || 0;
-  const yearly = result.yearly || 0;
-  const people = inputs.people || 1;
-  const perPerson = (monthly / people).toFixed(1);
-  const typeLabel = {company:'الشركة', college:'الكلية/الجامعة', town:'المدينة/البلدة'}[inputs.communityType] || 'المجتمع';
-
-  const breakdown = [
-    { name: "الكهرباء",  val: (inputs.electricity||0)*0.5 },
-    { name: "البنزين",   val: (inputs.gasoline||0)*2.31 },
-    { name: "الديزل",    val: (inputs.diesel||0)*2.68 },
-    { name: "النفايات",  val: (inputs.waste||0)*1.9 },
-    { name: "الطيران",   val: ((inputs.flights||0)*115)/12 },
-    { name: "المياه",    val: (inputs.water||0)*0.0003 }
-  ].filter(x => x.val > 0).sort((a,b) => b.val - a.val);
-
-  const top1 = breakdown[0] || { name: "الكهرباء", val: 0 };
-  const top2 = breakdown[1] || { name: "الوقود", val: 0 };
-
-  const tips = {
-    "الكهرباء": `⚡ تركيب أنظمة الطاقة الشمسية في ${typeLabel} يمكن أن يقلص فاتورة الكهرباء حتى 60%.`,
-    "البنزين":  `🚗 تبنّي سياسة العمل عن بُعد يومين في الأسبوع يوفر وقود النقل بشكل ملموس.`,
-    "الديزل":   `🚚 استبدال مركبات الديزل بمركبات كهربائية أو هجينة يقلل انبعاثات النقل.`,
-    "النفايات": `♻️ تطبيق برنامج فرز وإعادة تدوير النفايات يخفض الانبعاثات ويوفر تكاليف الإدارة.`,
-    "الطيران":  `✈️ استبدال الرحلات الداخلية بمؤتمرات الفيديو يوفر ميزانية ويخفض البصمة بشكل كبير.`,
-    "المياه":   `💧 تركيب أنظمة تجميع مياه الأمطار وإعادة استخدام المياه الرمادية.`
-  };
-
-  return `🔍 **تحليل البصمة الكربونية لـ${typeLabel}**
-
-متوسط نصيب الفرد: **${perPerson} كغم CO₂e/شهر**
-
-أكبر مصادر الانبعاثات:
-1. **${top1.name}**: ${top1.val.toFixed(0)} كغم CO₂/شهر (${monthly > 0 ? ((top1.val/monthly)*100).toFixed(0) : 0}% من الإجمالي)
-2. **${top2.name}**: ${top2.val.toFixed(0)} كغم CO₂/شهر (${monthly > 0 ? ((top2.val/monthly)*100).toFixed(0) : 0}% من الإجمالي)
-
-💡 **توصيات مخصصة لـ${typeLabel}:**
-${tips[top1.name] || "• تحسين كفاءة الطاقة في المبنى الرئيسي."}
-${tips[top2.name] || "• مراجعة سياسات التنقل والنقل."}
-• 🌱 زراعة ${Math.ceil(monthly/50)} شجرة شهرياً تعوّض ${(monthly*0.1).toFixed(0)} كغم CO₂.
-
-✅ تطبيق هذه التوصيات يمكن أن يقلل البصمة السنوية بحوالي **${(yearly*0.25).toFixed(1)} طن CO₂** — وهذا استثمار حقيقي في مستقبل أفضل لـ${typeLabel} والبيئة! 🌿`;
-}
-
-
+/* ================= EmailJS Sender ================= */
 async function sendReminderEmail(userEmail) {
   try {
     await axios.post(

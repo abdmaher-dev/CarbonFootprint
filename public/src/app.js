@@ -37,10 +37,14 @@ window.addEventListener('load', triggerReminderCheck);
 //  AI ANALYSIS
 // ================================================================
 
-async function analyzeWithAI(inputs, result, isCommunity = false) {
+async function analyzeWithAI(inputs, result, isCommunity = false, lang = 'ar') {
   const route = isCommunity ? '/analyze-community' : '/analyze';
   try {
-    const r = await fetch(`${BACKEND_URL}${route}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({inputs,result})});
+    const r = await fetch(`${BACKEND_URL}${route}`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({inputs, result, lang})
+    });
     if(!r.ok) throw new Error();
     const d = await r.json();
     if(d.analysis) return d.analysis;
@@ -52,11 +56,19 @@ async function analyzeWithAI(inputs, result, isCommunity = false) {
 
 async function sendResultEmail(email, result, inputs) {
   if(typeof emailjs==='undefined'||!email) return {ok:false};
-  const aiAnalysis = await analyzeWithAI(inputs, result);
+  // الرد الآن ثنائي اللغة دائماً — استدعاء واحد فقط
+  const aiAnalysis = await analyzeWithAI(inputs, result, false, 'bilingual');
   try {
-    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {to_email:email,user_result:result.monthly.toFixed(1),user_yearly:result.yearly.toFixed(2),user_level:result.level,user_color:result.color,ai_analysis:aiAnalysis});
-    return {ok:true,analysis:aiAnalysis};
-  } catch(e) { return {ok:false,analysis:aiAnalysis}; }
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      to_email: email,
+      user_result: result.monthly.toFixed(1),
+      user_yearly: result.yearly.toFixed(2),
+      user_level: result.level,
+      user_color: result.color,
+      ai_analysis: aiAnalysis
+    });
+    return {ok:true, analysis:aiAnalysis};
+  } catch(e) { return {ok:false, analysis:aiAnalysis}; }
 }
 
 // ================================================================
@@ -269,18 +281,20 @@ function _transComm(c, set, isRTL) {
    ['header11','header11'],['header12','header12'],['header13','header13'],['header14','header14']
   ].forEach(([id,k]) => set(document.getElementById(id), c.comm[k]));
 
+  // Email section
+  set(document.getElementById('comm-secEmail'), c.comm.secEmail);
+  const emailCard = document.querySelector('#emailC')?.closest('.input-card');
+  if(emailCard) {
+    const lbl = emailCard.querySelector('.form-label');
+    if(lbl) lbl.innerHTML = c.comm.emailLabel;
+    const note = emailCard.querySelector('p');
+    if(note) note.innerHTML = c.comm.emailNote;
+  }
+
   const infos = document.querySelectorAll('.info-card');
   if(infos[0]) { const v=infos[0].querySelector('.value'); if(v) v.textContent=c.comm.info1Val; const l=infos[0].querySelector('.label'); if(l) l.textContent=c.comm.info1Lab; }
   if(infos[1]) { const l=infos[1].querySelector('.label'); if(l) l.textContent=c.comm.info2Lab; }
   if(infos[2]) { const l=infos[2].querySelector('.label'); if(l) l.textContent=c.comm.info3Lab; }
-
-  // Email section translation
-  const commEmailLabel = document.getElementById('comm-emailLabel');
-  if(commEmailLabel && c.comm.emailLabel) commEmailLabel.innerHTML = c.comm.emailLabel;
-  const commEmailNote = document.getElementById('comm-emailNote');
-  if(commEmailNote && c.comm.emailNote) commEmailNote.innerHTML = c.comm.emailNote;
-  const commSecEmail = document.getElementById('comm-secEmail');
-  if(commSecEmail && c.comm.secEmail) commSecEmail.innerHTML = c.comm.secEmail;
 }
 
 function _transAbout(c, set, isRTL) {
@@ -468,7 +482,7 @@ if(ar){
 }
 
 // ================================================================
-//  🏘️ COMMUNITY CALCULATOR  (water in liters)
+//  🏘️ COMMUNITY CALCULATOR
 // ================================================================
 async function calculateCommunity() {
   const g = id => parseFloat(document.getElementById(id)?.value)||0;
@@ -487,35 +501,33 @@ async function calculateCommunity() {
 
   let color="", level="", advice="";
   const ar = currentLang==="ar";
-
   const yearlyKg = total * 12;
   const perPersonYearly = people > 0 ? yearlyKg / people : 0;
 
   if(total<=0||people<=0){
-    color="⚫";
-    level = ar ? "غير صالح" : "Invalid";
+    color="⚫"; level=ar?"غير صالح":"Invalid";
     advice=ar?"أدخل قيماً صحيحة.":"Please enter valid values.";
   } else if(ar){
-    if(perPersonYearly < 2000)      {color="🟢"; level="منخفضة جداً"; advice="بصمة الفرد في هذا المجتمع منخفضة جداً! أداء ممتاز.";}
-    else if(perPersonYearly < 4500) {color="🟡"; level="طبيعية";      advice="بصمة المجتمع ضمن المعدل الطبيعي في العراق.";}
-    else if(perPersonYearly < 9000) {color="🟠"; level="متوسطة";      advice="بصمة متوسطة، يمكن تحسين كفاءة الطاقة والنقل.";}
-    else if(perPersonYearly < 15000){color="🔴"; level="مرتفعة";      advice="بصمة مرتفعة، الاستهلاك أعلى من المعدل.";}
-    else                            {color="⚫"; level="عالية جداً";  advice="بصمة عالية جداً، يحتاج المجتمع خطة تقليل واضحة.";}
+    if(perPersonYearly<2000)       {color="🟢";level="منخفضة جداً";advice="بصمة الفرد في هذا المجتمع منخفضة جداً! أداء ممتاز.";}
+    else if(perPersonYearly<4500)  {color="🟡";level="طبيعية";      advice="بصمة المجتمع ضمن المعدل الطبيعي في العراق.";}
+    else if(perPersonYearly<9000)  {color="🟠";level="متوسطة";      advice="بصمة متوسطة، يمكن تحسين كفاءة الطاقة والنقل.";}
+    else if(perPersonYearly<15000) {color="🔴";level="مرتفعة";      advice="بصمة مرتفعة، الاستهلاك أعلى من المعدل.";}
+    else                           {color="⚫";level="عالية جداً";  advice="بصمة عالية جداً، يحتاج المجتمع خطة تقليل واضحة.";}
   } else {
-    if(perPersonYearly < 2000)      {color="🟢"; level="Very Low";  advice="Very low per-person footprint! Excellent.";}
-    else if(perPersonYearly < 4500) {color="🟡"; level="Normal";    advice="Within the normal Iraqi average.";}
-    else if(perPersonYearly < 9000) {color="🟠"; level="Average";   advice="Average footprint. Improvements possible.";}
-    else if(perPersonYearly < 15000){color="🔴"; level="High";      advice="High footprint per person.";}
-    else                            {color="⚫"; level="Very High"; advice="Very high footprint. Action needed.";}
+    if(perPersonYearly<2000)       {color="🟢";level="Very Low"; advice="Very low per-person footprint! Excellent.";}
+    else if(perPersonYearly<4500)  {color="🟡";level="Normal";   advice="Within the normal Iraqi average.";}
+    else if(perPersonYearly<9000)  {color="🟠";level="Average";  advice="Average footprint. Improvements possible.";}
+    else if(perPersonYearly<15000) {color="🔴";level="High";     advice="High footprint per person.";}
+    else                           {color="⚫";level="Very High";advice="Very high footprint. Action needed.";}
   }
 
-  const resultData = {monthly: total, yearly: tonsYear, color, level, advice};
+  const resultData = {monthly:total, yearly:tonsYear, color, level, advice};
   const el = document.getElementById("communityResult");
   if(!el) return;
 
   const typeLabel = ar
-    ? ({company:"شركة", college:"كلية/جامعة", town:"مدينة/بلدة"})[type] || "غير محدد"
-    : ({company:"Company", college:"College/University", town:"City/Town"})[type] || "Not set";
+    ? ({company:"شركة",college:"كلية/جامعة",town:"مدينة/بلدة"})[type]||"غير محدد"
+    : ({company:"Company",college:"College/University",town:"City/Town"})[type]||"Not set";
 
   el.innerHTML = `
     <div class="result-card" style="direction:rtl">
@@ -532,7 +544,7 @@ async function calculateCommunity() {
         <p>📊 ${ar?'نوع المجتمع':'Community type'}: <strong>${typeLabel}</strong></p>
       </div>
       <p class="result-advice">${advice}</p>
-      ${email ? `
+      ${email?`
         <div id="commAiBlock" class="result-advice" style="margin-top:1rem;border-color:#fde68a;background:#fffbeb">
           <p style="color:#92400e;font-weight:700;font-family:'Parastoo',serif">🤖 ${ar?'جاري تحليل البيانات...':'Analyzing your data...'}</p>
           <div style="display:flex;gap:0.5rem;margin-top:0.5rem">
@@ -542,19 +554,14 @@ async function calculateCommunity() {
           </div>
         </div>
         <p id="commEmailStatus" class="email-notice">📧 ${ar?'جاري إرسال التقرير...':'Sending report...'}</p>
-      ` : ''}
+      `:''}
     </div>
     <style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}</style>`;
 
   el.scrollIntoView({behavior:'smooth', block:'center'});
 
   if(email) {
-    // إرسال التحليل بالذكاء الاصطناعي
-    const commInputs = {
-      electricity, gasoline, diesel,
-      waste, water, flights, people,
-      communityType: type, factor
-    };
+    const commInputs = {electricity, gasoline, diesel, waste, water, flights, people, communityType:type, factor};
     const emailRes = await sendCommunityEmail(email, resultData, commInputs);
     await saveEmailToDB(email);
 
@@ -571,15 +578,16 @@ async function calculateCommunity() {
 }
 
 async function sendCommunityEmail(email, result, inputs) {
-  if(typeof emailjs==='undefined' || !email) return {ok:false};
-  const aiAnalysis = await analyzeWithAI(inputs, result, true);
+  if(typeof emailjs==='undefined'||!email) return {ok:false};
+  // الرد الآن ثنائي اللغة دائماً — استدعاء واحد فقط
+  const aiAnalysis = await analyzeWithAI(inputs, result, true, 'bilingual');
   try {
     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-      to_email: email,
+      to_email:    email,
       user_result: result.monthly.toFixed(1),
       user_yearly: result.yearly.toFixed(2),
-      user_level: result.level,
-      user_color: result.color,
+      user_level:  result.level,
+      user_color:  result.color,
       ai_analysis: aiAnalysis
     });
     return {ok:true, analysis:aiAnalysis};
@@ -595,4 +603,4 @@ if(fadeEls.length){
     entries.forEach(e=>{ if(e.isIntersecting){e.target.classList.add('show'); obs.unobserve(e.target);} });
   },{threshold:0.1});
   fadeEls.forEach(el=>obs.observe(el));
-}
+} 
