@@ -10,6 +10,8 @@
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Parastoo:wght@400..700&amp;display=swap" rel="stylesheet"/>
+<!-- EmailJS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" type="text/javascript"></script>
 <link href="/style.css" rel="stylesheet"/></head>
 <body class="comm-page">
 <!-- Navbar -->
@@ -122,6 +124,20 @@
 <label class="form-label ar" id="header12">💧 استهلاك الماء (لتر/شهر)</label>
 <input class="form-input ar" id="waterC" min="0" placeholder="8000000" type="number"/>
 </div>
+</div>
+<!-- الإيميل -->
+<p class="form-section-title ar" id="comm-secEmail">📧 استلام التقرير</p>
+<div class="form-grid">
+  <div class="input-card email-card">
+    <label class="form-label ar" id="comm-emailLabel">
+      📧 البريد الإلكتروني
+      <span style="color:#0891b2;font-size:0.8rem"> (لاستلام التقرير وتحليل الذكاء الاصطناعي)</span>
+    </label>
+    <input class="form-input" id="emailC" placeholder="example@gmail.com" style="direction:ltr; text-align:left" type="email"/>
+    <p class="ar" id="comm-emailNote" style="font-size:0.78rem; color:#6b7280; margin-top:0.4rem;">
+      ✅ سيصلك تقرير مفصّل بالنتائج + تحليل ذكاء اصطناعي مخصص
+    </p>
+  </div>
 </div>
 <!-- زر الحساب -->
 <div class="btn-wrap">

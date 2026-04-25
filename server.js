@@ -183,7 +183,115 @@ app.post('/analyze', async (req, res) => {
   }
 });
 
-/* ================= EmailJS Sender ================= */
+/* ================= 🤖 Community AI Analysis Route ================= */
+app.post('/analyze-community', async (req, res) => {
+  try {
+    const { inputs, result } = req.body;
+    if (!inputs || !result) return res.status(400).json({ error: 'Missing data' });
+
+    if (!process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY === '') {
+      const localAnalysis = generateCommunityAnalysis(inputs, result);
+      return res.json({ analysis: localAnalysis, source: 'local' });
+    }
+
+    const typeLabel = {company:'شركة', college:'كلية/جامعة', town:'مدينة/بلدة'}[inputs.communityType] || 'غير محدد';
+
+    const prompt = `
+أنت خبير بيئي متخصص في تحليل البصمة الكربونية للمؤسسات والمجتمعات.
+بناءً على بيانات المجتمع التالية، قدّم تحليلاً وتوصيات مخصصة.
+
+📊 بيانات المجتمع:
+- نوع المجتمع: ${typeLabel}
+- عدد الأفراد/الموظفين: ${inputs.people || 0}
+- كهرباء: ${inputs.electricity || 0} ك.و.س/شهر → ${((inputs.electricity||0)*0.5).toFixed(0)} كغم CO₂
+- بنزين: ${inputs.gasoline || 0} لتر/شهر → ${((inputs.gasoline||0)*2.31).toFixed(0)} كغم CO₂
+- ديزل: ${inputs.diesel || 0} لتر/شهر → ${((inputs.diesel||0)*2.68).toFixed(0)} كغم CO₂
+- نفايات: ${inputs.waste || 0} كغم/شهر → ${((inputs.waste||0)*1.9).toFixed(0)} كغم CO₂
+- مياه: ${inputs.water || 0} لتر/شهر
+- رحلات جوية: ${inputs.flights || 0} سنوياً → ${((inputs.flights||0)*115/12).toFixed(0)} كغم CO₂/شهر
+
+📈 الإجمالي: ${(result.monthly||0).toFixed(1)} كغم CO₂e/شهر (${(result.yearly||0).toFixed(2)} طن/سنة)
+📊 متوسط الفرد: ${inputs.people > 0 ? ((result.monthly||0)/inputs.people).toFixed(1) : 0} كغم CO₂e/شهر
+المستوى: ${result.level || 'غير محدد'}
+
+اكتب بالعربية الفصيحة وقدّم:
+1. أكبر مصدرَين للانبعاثات في هذا المجتمع
+2. ثلاث توصيات عملية مناسبة لـ${typeLabel} تحديداً
+3. الوفورات المتوقعة من تطبيق كل توصية
+4. تشجيع إيجابي في النهاية
+
+لا تتجاوز 250 كلمة.
+`;
+
+    const response = await axios.post(
+      'https://api.anthropic.com/v1/messages',
+      { model: 'claude-sonnet-4-5', max_tokens: 600, messages: [{ role: 'user', content: prompt }] },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01'
+        },
+        timeout: 15000
+      }
+    );
+
+    const text = response.data.content[0]?.text || '';
+    res.json({ analysis: text, source: 'ai' });
+
+  } catch (err) {
+    console.error('❌ Community AI error:', err.response?.data || err.message);
+    const { inputs, result } = req.body;
+    const localAnalysis = generateCommunityAnalysis(inputs, result);
+    res.json({ analysis: localAnalysis, source: 'local-fallback' });
+  }
+});
+
+function generateCommunityAnalysis(inputs, result) {
+  const monthly = result.monthly || 0;
+  const yearly = result.yearly || 0;
+  const people = inputs.people || 1;
+  const perPerson = (monthly / people).toFixed(1);
+  const typeLabel = {company:'الشركة', college:'الكلية/الجامعة', town:'المدينة/البلدة'}[inputs.communityType] || 'المجتمع';
+
+  const breakdown = [
+    { name: "الكهرباء",  val: (inputs.electricity||0)*0.5 },
+    { name: "البنزين",   val: (inputs.gasoline||0)*2.31 },
+    { name: "الديزل",    val: (inputs.diesel||0)*2.68 },
+    { name: "النفايات",  val: (inputs.waste||0)*1.9 },
+    { name: "الطيران",   val: ((inputs.flights||0)*115)/12 },
+    { name: "المياه",    val: (inputs.water||0)*0.0003 }
+  ].filter(x => x.val > 0).sort((a,b) => b.val - a.val);
+
+  const top1 = breakdown[0] || { name: "الكهرباء", val: 0 };
+  const top2 = breakdown[1] || { name: "الوقود", val: 0 };
+
+  const tips = {
+    "الكهرباء": `⚡ تركيب أنظمة الطاقة الشمسية في ${typeLabel} يمكن أن يقلص فاتورة الكهرباء حتى 60%.`,
+    "البنزين":  `🚗 تبنّي سياسة العمل عن بُعد يومين في الأسبوع يوفر وقود النقل بشكل ملموس.`,
+    "الديزل":   `🚚 استبدال مركبات الديزل بمركبات كهربائية أو هجينة يقلل انبعاثات النقل.`,
+    "النفايات": `♻️ تطبيق برنامج فرز وإعادة تدوير النفايات يخفض الانبعاثات ويوفر تكاليف الإدارة.`,
+    "الطيران":  `✈️ استبدال الرحلات الداخلية بمؤتمرات الفيديو يوفر ميزانية ويخفض البصمة بشكل كبير.`,
+    "المياه":   `💧 تركيب أنظمة تجميع مياه الأمطار وإعادة استخدام المياه الرمادية.`
+  };
+
+  return `🔍 **تحليل البصمة الكربونية لـ${typeLabel}**
+
+متوسط نصيب الفرد: **${perPerson} كغم CO₂e/شهر**
+
+أكبر مصادر الانبعاثات:
+1. **${top1.name}**: ${top1.val.toFixed(0)} كغم CO₂/شهر (${monthly > 0 ? ((top1.val/monthly)*100).toFixed(0) : 0}% من الإجمالي)
+2. **${top2.name}**: ${top2.val.toFixed(0)} كغم CO₂/شهر (${monthly > 0 ? ((top2.val/monthly)*100).toFixed(0) : 0}% من الإجمالي)
+
+💡 **توصيات مخصصة لـ${typeLabel}:**
+${tips[top1.name] || "• تحسين كفاءة الطاقة في المبنى الرئيسي."}
+${tips[top2.name] || "• مراجعة سياسات التنقل والنقل."}
+• 🌱 زراعة ${Math.ceil(monthly/50)} شجرة شهرياً تعوّض ${(monthly*0.1).toFixed(0)} كغم CO₂.
+
+✅ تطبيق هذه التوصيات يمكن أن يقلل البصمة السنوية بحوالي **${(yearly*0.25).toFixed(1)} طن CO₂** — وهذا استثمار حقيقي في مستقبل أفضل لـ${typeLabel} والبيئة! 🌿`;
+}
+
+
 async function sendReminderEmail(userEmail) {
   try {
     await axios.post(
