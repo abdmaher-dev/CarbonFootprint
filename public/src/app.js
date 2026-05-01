@@ -26,8 +26,15 @@ async function loadTranslations() {
 // ================================================================
 //  BACKEND HELPERS
 // ================================================================
-async function saveEmailToDB(email) {
-  try { await fetch(`${BACKEND_URL}/save-email`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email})}); } catch(e) {}
+// ✅ الآن يرسل بيانات البصمة مع الإيميل لحفظها في DB
+async function saveEmailToDB(email, footprint = null) {
+  try {
+    await fetch(`${BACKEND_URL}/save-email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, footprint })
+    });
+  } catch(e) {}
 }
 async function triggerReminderCheck() { try { await fetch(`${BACKEND_URL}/check-reminders`); } catch(e) {} }
 window.addEventListener('load', triggerReminderCheck);
@@ -57,7 +64,7 @@ async function analyzeWithAI(inputs, result, isCommunity = false, lang = 'ar') {
 async function sendResultEmail(email, result, inputs) {
   if(typeof emailjs==='undefined'||!email) return {ok:false};
   // الرد الآن ثنائي اللغة دائماً — استدعاء واحد فقط
-  const aiAnalysis = await analyzeWithAI(inputs, result, false, 'bilingual');
+  const aiAnalysis = await analyzeWithAI(inputs, result, false, currentLang);
   try {
     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
       to_email: email,
@@ -468,7 +475,8 @@ if(ar){
 
   if(email){
     const emailRes = await sendResultEmail(email, resultData, inputs);
-    await saveEmailToDB(email);
+    // ✅ نحفظ البصمة مع الإيميل في DB
+    await saveEmailToDB(email, { monthly: resultData.monthly, yearly: resultData.yearly, level: resultData.level, color: resultData.color });
     const aiBlock = document.getElementById('aiAnalysisBlock');
     if(aiBlock && emailRes.analysis){
       const html = emailRes.analysis.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
@@ -563,7 +571,8 @@ async function calculateCommunity() {
   if(email) {
     const commInputs = {electricity, gasoline, diesel, waste, water, flights, people, communityType:type, factor};
     const emailRes = await sendCommunityEmail(email, resultData, commInputs);
-    await saveEmailToDB(email);
+    // ✅ نحفظ البصمة مع الإيميل في DB
+    await saveEmailToDB(email, { monthly: resultData.monthly, yearly: resultData.yearly, level: resultData.level, color: resultData.color });
 
     const aiBlock = document.getElementById('commAiBlock');
     if(aiBlock && emailRes.analysis){
@@ -603,4 +612,4 @@ if(fadeEls.length){
     entries.forEach(e=>{ if(e.isIntersecting){e.target.classList.add('show'); obs.unobserve(e.target);} });
   },{threshold:0.1});
   fadeEls.forEach(el=>obs.observe(el));
-} 
+}

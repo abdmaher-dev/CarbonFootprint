@@ -1,66 +1,74 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const axios = require('axios');
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const axios = require("axios");
 
 const app = express();
 
-// Required for Railway (runs behind a proxy)
-app.set('trust proxy', 1);
-
+app.set("trust proxy", 1);
 app.use(cors());
 app.use(express.json());
 
 /* ================= MongoDB Connection ================= */
-mongoose.connect(process.env.MONGO_URI, {
-  serverSelectionTimeoutMS: 5000
-})
-  .then(() => console.log('✅ MongoDB Connected'))
-  .catch(err => {
-    console.error('❌ MongoDB error:', err.message);
-    process.exit(1); // Fail fast so Railway restarts the container
+mongoose
+  .connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 5000 })
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch((err) => {
+    console.error("❌ MongoDB error:", err.message);
+    process.exit(1);
   });
 
 /* ================= Schema ================= */
 const userSchema = new mongoose.Schema({
   email: { type: String, unique: true, required: true },
   createdAt: { type: Date, default: Date.now },
-  week1Sent: { type: Boolean, default: false }
+  week1Sent: { type: Boolean, default: false },
+
+  // ✅ حقول البصمة الكربونية
+  footprint: {
+    monthly: { type: Number, default: null }, // كغم CO₂e / شهر
+    yearly: { type: Number, default: null }, // طن CO₂e / سنة
+    level: { type: String, default: null }, // المستوى (منخفضة / مرتفعة ...)
+    color: { type: String, default: null }, // الإيموجي 🟢🟡🔴
+    savedAt: { type: Date, default: null }, // وقت آخر قياس
+  },
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 /* ================= Local Analysis Generator (Fallback) ================= */
 function generateLocalAnalysis(inputs, result) {
-  // حساب أكبر مساهمَين
   const breakdown = [
-    { name: "البنزين",     val: (inputs.gasoline || 0) * 2.31 },
-    { name: "الديزل",      val: (inputs.diesel || 0) * 2.68 },
-    { name: "السيارة",     val: (inputs.distance || 0) * 0.19 },
-    { name: "الكهرباء",   val: (inputs.electricity || 0) * 0.5 },
-    { name: "الغاز",       val: (inputs.gas || 0) * 36 },
-    { name: "المياه",      val: (inputs.water || 0) * 0.3 },
-    { name: "النفايات",    val: (inputs.waste || 0) * 4 * 1.9 },
-    { name: "الغذاء",      val: ((inputs.diet || 0) * 1000) / 12 },
-    { name: "الطيران",     val: ((inputs.flights || 0) * 115) / 12 },
-    { name: "التسوق",      val: (inputs.shopping || 0) * 0.4 }
-  ].filter(x => x.val > 0).sort((a,b) => b.val - a.val);
+    { name: "البنزين", val: (inputs.gasoline || 0) * 2.31 },
+    { name: "الديزل", val: (inputs.diesel || 0) * 2.68 },
+    { name: "السيارة", val: (inputs.distance || 0) * 0.19 },
+    { name: "الكهرباء", val: (inputs.electricity || 0) * 0.5 },
+    { name: "الغاز", val: (inputs.gas || 0) * 36 },
+    { name: "المياه", val: (inputs.water || 0) * 0.3 },
+    { name: "النفايات", val: (inputs.waste || 0) * 4 * 1.9 },
+    { name: "الغذاء", val: ((inputs.diet || 0) * 1000) / 12 },
+    { name: "الطيران", val: ((inputs.flights || 0) * 115) / 12 },
+    { name: "التسوق", val: (inputs.shopping || 0) * 0.4 },
+  ]
+    .filter((x) => x.val > 0)
+    .sort((a, b) => b.val - a.val);
 
   const top1 = breakdown[0] || { name: "الكهرباء", val: 0 };
-  const top2 = breakdown[1] || { name: "التنقل",    val: 0 };
+  const top2 = breakdown[1] || { name: "التنقل", val: 0 };
 
   const tips = {
-    "البنزين":   "🚗 فكّر في استخدام السيارة الكهربائية أو تقسيم التنقل مع زملاء للعمل.",
-    "الديزل":    "🚚 استبدل رحلات الديزل بالمواصلات العامة حيثما أمكن.",
-    "السيارة":   "🚌 استخدم المواصلات العامة أو الدراجة لمسافات أقل من 5 كم.",
-    "الكهرباء":  "💡 استبدل الأجهزة القديمة بأجهزة موفرة للطاقة (تصنيف A+).",
-    "الغاز":     "🔥 اعزل بيتك جيداً وقلّل استخدام التدفئة والتبريد.",
-    "المياه":    "💧 ضع موفرات المياه على الصنابير وأصلح أي تسرب.",
-    "النفايات":  "♻️ فرز النفايات وإعادة تدويرها يخفض الانبعاثات بشكل ملموس.",
-    "الغذاء":    "🥦 قلّل اللحوم الحمراء يومين في الأسبوع وزِد الخضروات.",
-    "الطيران":   "✈️ استبدل رحلة جوية واحدة بالسنة بالقطار أو المؤتمرات عن بُعد.",
-    "التسوق":    "🛍️ اشترِ أقل وأفضل — جودة على حساب الكمية."
+    البنزين:
+      "🚗 فكّر في استخدام السيارة الكهربائية أو تقسيم التنقل مع زملاء للعمل.",
+    الديزل: "🚚 استبدل رحلات الديزل بالمواصلات العامة حيثما أمكن.",
+    السيارة: "🚌 استخدم المواصلات العامة أو الدراجة لمسافات أقل من 5 كم.",
+    الكهرباء: "💡 استبدل الأجهزة القديمة بأجهزة موفرة للطاقة (تصنيف A+).",
+    الغاز: "🔥 اعزل بيتك جيداً وقلّل استخدام التدفئة والتبريد.",
+    المياه: "💧 ضع موفرات المياه على الصنابير وأصلح أي تسرب.",
+    النفايات: "♻️ فرز النفايات وإعادة تدويرها يخفض الانبعاثات بشكل ملموس.",
+    الغذاء: "🥦 قلّل اللحوم الحمراء يومين في الأسبوع وزِد الخضروات.",
+    الطيران: "✈️ استبدل رحلة جوية واحدة بالسنة بالقطار أو المؤتمرات عن بُعد.",
+    التسوق: "🛍️ اشترِ أقل وأفضل — جودة على حساب الكمية.",
   };
 
   const monthly = result.monthly || 0;
@@ -69,41 +77,66 @@ function generateLocalAnalysis(inputs, result) {
   return `🔍 **تحليل بصمتك الكربونية**
 
 أكبر مصادر انبعاثاتك:
-1. **${top1.name}**: ${top1.val.toFixed(0)} كغم CO₂/شهر (${((top1.val/monthly)*100).toFixed(0)}% من إجمالي بصمتك)
-2. **${top2.name}**: ${top2.val.toFixed(0)} كغم CO₂/شهر (${((top2.val/monthly)*100).toFixed(0)}% من إجمالي بصمتك)
+1. **${top1.name}**: ${top1.val.toFixed(0)} كغم CO₂/شهر (${((top1.val / monthly) * 100).toFixed(0)}% من إجمالي بصمتك)
+2. **${top2.name}**: ${top2.val.toFixed(0)} كغم CO₂/شهر (${((top2.val / monthly) * 100).toFixed(0)}% من إجمالي بصمتك)
 
 💡 **توصيات مخصصة لك:**
 ${tips[top1.name] || "• قلّل الاستهلاك العام للطاقة."}
 ${tips[top2.name] || "• راجع عادات التنقل اليومي."}
-• 🌱 زراعة شجرتين شهرياً تعوّض ${(monthly*0.1).toFixed(0)} كغم CO₂.
+• 🌱 زراعة شجرتين شهرياً تعوّض ${(monthly * 0.1).toFixed(0)} كغم CO₂.
 
-✅ إذا اتّبعت هذه النصائح يمكنك تقليل بصمتك السنوية بحوالي **${(yearly*0.25).toFixed(1)} طن CO₂** — وهذا يعادل إزالة سيارة من الطريق لأشهر!
+✅ إذا اتّبعت هذه النصائح يمكنك تقليل بصمتك السنوية بحوالي **${(yearly * 0.25).toFixed(1)} طن CO₂** — وهذا يعادل إزالة سيارة من الطريق لأشهر!
 
 استمر في القياس كل شهر لرصد تقدمك 🌿`;
 }
 
-/* ================= Save Email Route ================= */
-app.post('/save-email', async (req, res) => {
+/* ================= Save Email + Footprint Route ================= */
+// ✅ الآن يقبل بيانات البصمة ويحفظها
+app.post("/save-email", async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email, footprint } = req.body;
     if (!email) return res.sendStatus(400);
 
-    const exists = await User.findOne({ email });
-    if (!exists) {
-      await User.create({ email });
-      console.log('📥 Email saved:', email);
-
-      setTimeout(async () => {
-        const freshUser = await User.findOne({ email });
-        if (freshUser && !freshUser.week1Sent) {
-          const success = await sendReminderEmail(freshUser.email);
-          if (success) {
-            freshUser.week1Sent = true;
-            await freshUser.save();
-            console.log('📧 Reminder sent (7 days after signup):', freshUser.email);
-          }
+    const footprintData = footprint
+      ? {
+          monthly: footprint.monthly ?? null,
+          yearly: footprint.yearly ?? null,
+          level: footprint.level ?? null,
+          color: footprint.color ?? null,
+          savedAt: new Date(),
         }
-      },7 * 24 * 60 * 60 * 1000);
+      : {};
+
+    const exists = await User.findOne({ email });
+
+    if (!exists) {
+      // مستخدم جديد — أنشئه مع البصمة إن وُجدت
+      await User.create({ email, footprint: footprintData });
+      console.log("📥 New user saved:", email, footprintData);
+
+      // ⏰ تذكير بعد أسبوع
+      setTimeout(
+        async () => {
+          const freshUser = await User.findOne({ email });
+          if (freshUser && !freshUser.week1Sent) {
+            const success = await sendReminderEmail(
+              freshUser.email,
+              freshUser.footprint,
+            );
+            if (success) {
+              freshUser.week1Sent = true;
+              await freshUser.save();
+              console.log("📧 Week-1 reminder sent:", freshUser.email);
+            }
+          }
+        },
+        7 * 24 * 60 * 60 * 1000,
+      );
+    } else if (footprint) {
+      // مستخدم موجود — حدّث البصمة فقط
+      exists.footprint = footprintData;
+      await exists.save();
+      console.log("🔄 Footprint updated for:", email, footprintData);
     }
 
     res.sendStatus(200);
@@ -114,117 +147,138 @@ app.post('/save-email', async (req, res) => {
 });
 
 /* ================= 🤖 AI Analysis Route ================= */
-app.post('/analyze', async (req, res) => {
+app.post("/analyze", async (req, res) => {
   try {
-    const { inputs, result, lang = 'ar' } = req.body;
-    if (!inputs || !result) return res.status(400).json({ error: 'Missing data' });
+    const { inputs, result, lang = "ar" } = req.body;
+    if (!inputs || !result)
+      return res.status(400).json({ error: "Missing data" });
 
-    if (!process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY === '') {
-      console.log('⚠️ No API key found, using local analysis fallback');
-      const localAnalysis = generateLocalAnalysis(inputs, result);
-      return res.json({ analysis: localAnalysis, source: 'local' });
+    if (
+      !process.env.ANTHROPIC_API_KEY ||
+      process.env.ANTHROPIC_API_KEY === ""
+    ) {
+      console.log("⚠️ No API key found, using local analysis fallback");
+      return res.json({
+        analysis: generateLocalAnalysis(inputs, result),
+        source: "local",
+      });
     }
 
-    const isAr = lang === 'ar';
+    const isAr = lang === "ar";
+
     const langInstruction = isAr
-      ? 'اكتب بالعربية الفصيحة فقط.'
-      : 'Write in English only.';
+      ? "اكتب بالعربية الفصيحة فقط."
+      : "Write in English only.";
 
     const prompt = `
-${isAr ? 'أنت خبير بيئي متخصص في تحليل البصمة الكربونية.' : 'You are an environmental expert specializing in carbon footprint analysis.'}
-${isAr ? 'بناءً على بيانات المستخدم التالية، اكتشف السبب الرئيسي لارتفاع البصمة وقدّم تحليلاً وتوصيات مخصصة.' : 'Based on the following user data, identify the main causes of high footprint and provide personalized analysis and recommendations.'}
+${isAr ? "أنت خبير بيئي متخصص في تحليل البصمة الكربونية." : "You are an environmental expert specializing in carbon footprint analysis."}
+${isAr ? "بناءً على بيانات المستخدم التالية، اكتشف السبب الرئيسي لارتفاع البصمة وقدّم تحليلاً وتوصيات مخصصة." : "Based on the following user data, identify the main causes of high footprint and provide personalized analysis and recommendations."}
 
-📊 ${isAr ? 'بيانات المستخدم الشهرية' : 'Monthly user data'}:
-- ${isAr?'بنزين':'Gasoline'}: ${inputs.gasoline || 0} ${isAr?'لتر/شهر':'L/month'} → ${((inputs.gasoline || 0)*2.31).toFixed(0)} kg CO₂
-- ${isAr?'ديزل':'Diesel'}: ${inputs.diesel || 0} ${isAr?'لتر/شهر':'L/month'} → ${((inputs.diesel || 0)*2.68).toFixed(0)} kg CO₂
-- ${isAr?'مسافة بالسيارة':'Distance'}: ${inputs.distance || 0} ${isAr?'كم/شهر':'km/month'} → ${((inputs.distance || 0)*0.19).toFixed(0)} kg CO₂
-- ${isAr?'كهرباء':'Electricity'}: ${inputs.electricity || 0} ${isAr?'ك.و.س/شهر':'kWh/month'} → ${((inputs.electricity || 0)*0.5).toFixed(0)} kg CO₂
-- ${isAr?'أسطوانات غاز':'Gas cylinders'}: ${inputs.gas || 0}${isAr?'/شهر':'/month'} → ${((inputs.gas || 0)*36).toFixed(0)} kg CO₂
-- ${isAr?'مياه':'Water'}: ${inputs.water || 0} ${isAr?'م³/شهر':'L/month'} → ${((inputs.water || 0)*0.3).toFixed(0)} kg CO₂
-- ${isAr?'نفايات':'Waste'}: ${inputs.waste || 0} ${isAr?'كغم/أسبوع':'kg/week'} → ${((inputs.waste || 0)*4*1.9).toFixed(0)} kg CO₂
-- ${isAr?'نمط الغذاء':'Diet'}: ${inputs.diet === 3.3 ? (isAr?'غني باللحوم':'High-meat') : inputs.diet === 2.5 ? (isAr?'متوسط':'Moderate') : inputs.diet === 1.7 ? (isAr?'نباتي':'Vegan') : (isAr?'غير محدد':'Unspecified')}
-- ${isAr?'رحلات جوية':'Flights'}: ${inputs.flights || 0}${isAr?'/سنة':'/year'}
-- ${isAr?'إنفاق شهري':'Monthly spending'}: ${inputs.shopping || 0} USD
+📊 ${isAr ? "بيانات المستخدم الشهرية" : "Monthly user data"}:
+- ${isAr ? "بنزين" : "Gasoline"}: ${inputs.gasoline || 0} ${isAr ? "لتر/شهر" : "L/month"} → ${((inputs.gasoline || 0) * 2.31).toFixed(0)} kg CO₂
+- ${isAr ? "ديزل" : "Diesel"}: ${inputs.diesel || 0} ${isAr ? "لتر/شهر" : "L/month"} → ${((inputs.diesel || 0) * 2.68).toFixed(0)} kg CO₂
+- ${isAr ? "مسافة بالسيارة" : "Distance"}: ${inputs.distance || 0} ${isAr ? "كم/شهر" : "km/month"} → ${((inputs.distance || 0) * 0.19).toFixed(0)} kg CO₂
+- ${isAr ? "كهرباء" : "Electricity"}: ${inputs.electricity || 0} ${isAr ? "ك.و.س/شهر" : "kWh/month"} → ${((inputs.electricity || 0) * 0.5).toFixed(0)} kg CO₂
+- ${isAr ? "أسطوانات غاز" : "Gas cylinders"}: ${inputs.gas || 0}${isAr ? "/شهر" : "/month"} → ${((inputs.gas || 0) * 36).toFixed(0)} kg CO₂
+- ${isAr ? "مياه" : "Water"}: ${inputs.water || 0} ${isAr ? "م³/شهر" : "L/month"} → ${((inputs.water || 0) * 0.3).toFixed(0)} kg CO₂
+- ${isAr ? "نفايات" : "Waste"}: ${inputs.waste || 0} ${isAr ? "كغم/أسبوع" : "kg/week"} → ${((inputs.waste || 0) * 4 * 1.9).toFixed(0)} kg CO₂
+- ${isAr ? "نمط الغذاء" : "Diet"}: ${inputs.diet === 3.3 ? (isAr ? "غني باللحوم" : "High-meat") : inputs.diet === 2.5 ? (isAr ? "متوسط" : "Moderate") : inputs.diet === 1.7 ? (isAr ? "نباتي" : "Vegan") : isAr ? "غير محدد" : "Unspecified"}
+- ${isAr ? "رحلات جوية" : "Flights"}: ${inputs.flights || 0}${isAr ? "/سنة" : "/year"}
+- ${isAr ? "إنفاق شهري" : "Monthly spending"}: ${inputs.shopping || 0} USD
 
-📈 ${isAr?'النتيجة الإجمالية':'Total'}: ${(result.monthly || 0).toFixed(1)} kg CO₂e/${isAr?'شهر':'month'} (${(result.yearly || 0).toFixed(2)} ${isAr?'طن/سنة':'tons/year'})
-${isAr?'المستوى':'Level'}: ${result.level || (isAr?'غير محدد':'Unspecified')}
+📈 ${isAr ? "النتيجة الإجمالية" : "Total"}: ${(result.monthly || 0).toFixed(1)} kg CO₂e/${isAr ? "شهر" : "month"} (${(result.yearly || 0).toFixed(2)} ${isAr ? "طن/سنة" : "tons/year"})
+${isAr ? "المستوى" : "Level"}: ${result.level || (isAr ? "غير محدد" : "Unspecified")}
 
 ${langInstruction}
-${isAr ? `الرجاء تقديم:
+${
+  isAr
+    ? `الرجاء تقديم:
 1. أكبر سببين لارتفاع البصمة (مقارنة بالمتوسط العالمي)
 2. ثلاث نصائح مخصصة وعملية بناءً على بياناته تحديداً
 3. الوفورات المتوقعة إذا اتّبع كل نصيحة (بالكغم أو الطن سنوياً)
-اكتب بأسلوب واضح وودّي، وأضف تشجيعاً إيجابياً في النهاية. لا تتجاوز 250 كلمة.`
-: `Please provide:
+اكتب بأسلوب واضح وودّي، وأضف تشجيعاً إيجابياً في النهاية. لا تتجاوز 200 كلمة.`
+    : `Please provide:
 1. The top 2 causes of high footprint (compared to global average)
 2. Three personalized, actionable tips based on their specific data
 3. Expected savings if each tip is followed (in kg or tons/year)
-Write in a clear and friendly tone, with positive encouragement at the end. Max 250 words.`}
+Write in a clear and friendly tone, with positive encouragement at the end. Max 200 words.`
+}
 `;
 
     const response = await axios.post(
-      'https://api.anthropic.com/v1/messages',
+      "https://api.anthropic.com/v1/messages",
       {
-        model: 'claude-sonnet-4-5',
+        model: "claude-sonnet-4-5",
         max_tokens: 600,
-        messages: [{ role: 'user', content: prompt }]
+        messages: [{ role: "user", content: prompt }],
       },
       {
-  headers: {
-    'Content-Type': 'application/json',
-    'x-api-key': process.env.ANTHROPIC_API_KEY,
-    'anthropic-version': '2023-06-01'
-  },
-  timeout: 15000  // ← هنا صح من ناحية المكان
-}
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.ANTHROPIC_API_KEY,
+          "anthropic-version": "2023-06-01",
+        },
+        timeout: 15000,
+      },
     );
 
-    const text = response.data.content[0]?.text || '';
-    res.json({ analysis: text, source: 'ai' });
-
+    res.json({ analysis: response.data.content[0]?.text || "", source: "ai" });
   } catch (err) {
-    console.error('❌ AI error:', err.response?.data || err.message);
-    // في حالة فشل الـ AI، استخدم التحليل المحلي
+    console.error("❌ AI error:", err.response?.data || err.message);
     const { inputs, result } = req.body;
-    const localAnalysis = generateLocalAnalysis(inputs, result);
-    res.json({ analysis: localAnalysis, source: 'local-fallback' });
+    res.json({
+      analysis: generateLocalAnalysis(inputs, result),
+      source: "local-fallback",
+    });
   }
 });
 
 /* ================= Community AI Analysis Route ================= */
-app.post('/analyze-community', async (req, res) => {
+app.post("/analyze-community", async (req, res) => {
   try {
     const { inputs, result } = req.body;
-    if (!inputs || !result) return res.status(400).json({ error: 'Missing data' });
+    if (!inputs || !result)
+      return res.status(400).json({ error: "Missing data" });
 
-    if (!process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY === '') {
-      const localAnalysis = generateLocalAnalysis(inputs, result);
-      return res.json({ analysis: localAnalysis, source: 'local' });
+    if (
+      !process.env.ANTHROPIC_API_KEY ||
+      process.env.ANTHROPIC_API_KEY === ""
+    ) {
+      return res.json({
+        analysis: generateLocalAnalysis(inputs, result),
+        source: "local",
+      });
     }
 
-    const typeLabels = { company: 'Company', college: 'College/University', town: 'City/Town' };
-    const typeLabel = typeLabels[inputs.communityType] || 'Unspecified';
-    const perPerson = inputs.people > 0 ? ((result.monthly || 0) / inputs.people).toFixed(1) : 0;
+    const typeLabels = {
+      company: "Company",
+      college: "College/University",
+      town: "City/Town",
+    };
+    const perPerson =
+      inputs.people > 0
+        ? ((result.monthly || 0) / inputs.people).toFixed(1)
+        : 0;
 
     const prompt = `
 You are an environmental expert analyzing community carbon footprints.
 IMPORTANT: Write every point bilingually - Arabic first, then English translation immediately after.
 
 Community Data:
-- Type: ${typeLabel}
+- Type: ${typeLabels[inputs.communityType] || "Unspecified"}
 - People: ${inputs.people || 0}
-- Electricity: ${inputs.electricity || 0} kWh/month -> ${((inputs.electricity || 0)*0.5).toFixed(0)} kg CO2
-- Gasoline: ${inputs.gasoline || 0} L/month -> ${((inputs.gasoline || 0)*2.31).toFixed(0)} kg CO2
-- Diesel: ${inputs.diesel || 0} L/month -> ${((inputs.diesel || 0)*2.68).toFixed(0)} kg CO2
-- Waste: ${inputs.waste || 0} kg/month -> ${((inputs.waste || 0)*1.9).toFixed(0)} kg CO2
-- Water: ${inputs.water || 0} L/month -> ${((inputs.water || 0)*0.0003).toFixed(1)} kg CO2
+- Electricity: ${inputs.electricity || 0} kWh/month -> ${((inputs.electricity || 0) * 0.5).toFixed(0)} kg CO2
+- Gasoline: ${inputs.gasoline || 0} L/month -> ${((inputs.gasoline || 0) * 2.31).toFixed(0)} kg CO2
+- Diesel: ${inputs.diesel || 0} L/month -> ${((inputs.diesel || 0) * 2.68).toFixed(0)} kg CO2
+- Waste: ${inputs.waste || 0} kg/month -> ${((inputs.waste || 0) * 1.9).toFixed(0)} kg CO2
+- Water: ${inputs.water || 0} L/month -> ${((inputs.water || 0) * 0.0003).toFixed(1)} kg CO2
 - Flights: ${inputs.flights || 0}/year
 
 Total: ${(result.monthly || 0).toFixed(1)} kg CO2e/month (${(result.yearly || 0).toFixed(2)} tons/year)
 Per person: ${perPerson} kg CO2e/month
-Level: ${result.level || 'Unspecified'}
+Level: ${result.level || "Unspecified"}
 
-Please provide a BILINGUAL response (Arabic sentence followed by English translation) covering:
+Please provide a BILINGUAL response covering:
 1. Top 2 causes of the high community footprint
 2. Three practical recommendations for this type of community
 3. Expected savings for each recommendation (kg or tons/year)
@@ -232,43 +286,73 @@ Friendly professional tone, positive encouragement at end. Max 300 words total.
 `;
 
     const response = await axios.post(
-      'https://api.anthropic.com/v1/messages',
-      { model: 'claude-sonnet-4-5', max_tokens: 700, messages: [{ role: 'user', content: prompt }] },
+      "https://api.anthropic.com/v1/messages",
       {
-        headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
-        timeout: 15000
-      }
+        model: "claude-sonnet-4-5",
+        max_tokens: 700,
+        messages: [{ role: "user", content: prompt }],
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.ANTHROPIC_API_KEY,
+          "anthropic-version": "2023-06-01",
+        },
+        timeout: 15000,
+      },
     );
 
-    const text = response.data.content[0]?.text || '';
-    res.json({ analysis: text, source: 'ai' });
-
+    res.json({ analysis: response.data.content[0]?.text || "", source: "ai" });
   } catch (err) {
-    console.error('Community AI error:', err.response?.data || err.message);
+    console.error("Community AI error:", err.response?.data || err.message);
     const { inputs, result } = req.body;
-    const localAnalysis = generateLocalAnalysis(inputs, result);
-    res.json({ analysis: localAnalysis, source: 'local-fallback' });
+    res.json({
+      analysis: generateLocalAnalysis(inputs, result),
+      source: "local-fallback",
+    });
   }
 });
 
 /* ================= EmailJS Sender ================= */
-async function sendReminderEmail(userEmail) {
+// ✅ الآن يرسل بيانات البصمة المحفوظة في DB إلى القالب
+async function sendReminderEmail(userEmail, footprint = {}) {
   try {
-    await axios.post(
-      "https://api.emailjs.com/api/v1.0/email/send",
-      {
-        service_id:   process.env.EMAILJS_SERVICE_ID,
-        template_id:  process.env.EMAILJS_TEMPLATE_ID_WEEK1,
-        user_id:      process.env.EMAILJS_PUBLIC_KEY,
-        accessToken:  process.env.EMAILJS_PRIVATE_KEY,
-        template_params: {
-          to_email:  userEmail,
-          to_name:   userEmail,
-          from_name: "Carbon Tracker"
-        }
-      }
+    const monthly =
+      footprint?.monthly != null ? footprint.monthly.toFixed(1) : "—";
+    const yearly =
+      footprint?.yearly != null ? footprint.yearly.toFixed(2) : "—";
+    const level = footprint?.level || "—";
+    const color = footprint?.color || "";
+    const savedAt = footprint?.savedAt
+      ? new Date(footprint.savedAt).toLocaleDateString("ar-IQ", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })
+      : "—";
+
+    await axios.post("https://api.emailjs.com/api/v1.0/email/send", {
+      service_id: process.env.EMAILJS_SERVICE_ID,
+      template_id: process.env.EMAILJS_TEMPLATE_ID_WEEK1,
+      user_id: process.env.EMAILJS_PUBLIC_KEY,
+      accessToken: process.env.EMAILJS_PRIVATE_KEY,
+      template_params: {
+        to_email: userEmail,
+        to_name: userEmail,
+        from_name: "Carbon Tracker",
+        // ✅ متغيرات البصمة المحفوظة
+        footprint_monthly: monthly, // كغم CO₂e / شهر
+        footprint_yearly: yearly, // طن CO₂e / سنة
+        footprint_level: level, // المستوى
+        footprint_color: color, // الإيموجي
+        footprint_date: savedAt, // تاريخ القياس
+      },
+    });
+    console.log(
+      "📧 Reminder sent to:",
+      userEmail,
+      `| Footprint: ${monthly} kg/month`,
     );
-    console.log("📧 Email sent to USER:", userEmail);
     return true;
   } catch (err) {
     console.error("❌ EmailJS error:", err.response?.data || err.message);
@@ -283,7 +367,8 @@ async function checkReminders() {
   for (const user of users) {
     const diffDays = (now - user.createdAt) / (1000 * 60 * 60 * 24);
     if (diffDays >= 7) {
-      const success = await sendReminderEmail(user.email);
+      // ✅ نمرر بيانات البصمة المحفوظة
+      const success = await sendReminderEmail(user.email, user.footprint);
       if (success) {
         user.week1Sent = true;
         await user.save();
@@ -298,18 +383,14 @@ setInterval(checkReminders, 6 * 60 * 60 * 1000);
 checkReminders();
 
 /* ================= Trigger Route ================= */
-app.get('/check-reminders', async (req, res) => {
+app.get("/check-reminders", async (req, res) => {
   await checkReminders();
   res.sendStatus(200);
 });
 
 /* ================= Start Server ================= */
 const PORT = process.env.PORT || 5000;
-const path = require('path');
-
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use((req, res) => {
-  res.status(404).send('Not Found');
-});
+const path = require("path");
+app.use(express.static(path.join(__dirname, "public")));
+app.use((req, res) => res.status(404).send("Not Found"));
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
